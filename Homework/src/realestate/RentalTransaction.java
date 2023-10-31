@@ -1,4 +1,4 @@
-package rentalcompany;
+package realestate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

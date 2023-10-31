@@ -1,4 +1,4 @@
-package rentalcompany;
+package realestate;
 
 public class Client {
     private static int lastClientId = 0;

@@ -1,4 +1,4 @@
-package rentalcompany;
+package realestate;
 
 public class ContactInformation {
     private String phoneNumber;

@@ -1,4 +1,4 @@
-package rentalcompany;
+package realestate;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,17 +11,20 @@ public class Main {
         CityLocation gdansk = new CityLocation("Gdansk", "Pomorskie", "12-123");
         CityLocation lublin = new CityLocation("Lublin", "Lubelskie", "12-123");
 
+        //Adding an agent
         List<CityLocation> asiaLocations = new ArrayList<>();
         asiaLocations.add(warszawa);
         asiaLocations.add(gdansk);
         ContactInformation asiaContact = new ContactInformation("+48123456789", "123@gmail.com", warszawa, "Mokotowa", "12/22");
         Agent asia = new Agent("Asia", "Kowalska", asiaContact, asiaLocations, 5000);
 
+        //Adding apartments
         Apartment apartment1 = new Apartment(lublin, 2, 1, false, 2300, 150000);
         Apartment apartment2 = new Apartment(warszawa, 3, 2, true, 3500, 300000);
         Apartment apartment3 = new Apartment(warszawa, 2, 1, false, 3200, 320000);
         Apartment apartment4 = new Apartment(gdansk, 4, 1, false, 5000, 520000);
 
+        //Adding clients
         ClientForm formOne = new ClientForm(3300, 2, 1, warszawa, false, TransactionType.RENTAL);
         ClientForm formTwo = new ClientForm(600000, 4, 1, gdansk, false, TransactionType.BUY);
 
@@ -31,6 +34,7 @@ public class Main {
         Client clientOne = new Client("One", "First", clientOneContact, formOne);
         Client clientTwo = new Client("Two", "Second", clientTwoContact, formTwo);
 
+        //Creating a real estate agency
         List<Apartment> apartmentList = new ArrayList<>();
         apartmentList.add(apartment1);
         apartmentList.add(apartment2);
@@ -44,12 +48,9 @@ public class Main {
         clientList.add(clientOne);
         clientList.add(clientTwo);
 
-        List<RentalTransaction> rentalTransactionList = new ArrayList<>();
+        RealEstateAgency myAgency = new RealEstateAgency(apartmentList, agentList, clientList);
 
-        List<Bill> billList = new ArrayList<>();
-
-        RealEstateAgency myAgency = new RealEstateAgency(apartmentList, agentList, clientList, rentalTransactionList, billList);
-
+        //Finding suitable apartments
         List<Apartment> suitableApartmentsForClientOne = myAgency.findSuitableApartments(clientOne);
         List<Apartment> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo);
 
@@ -70,6 +71,7 @@ public class Main {
             Apartment apartmentToBeRented = suitableApartmentsForClientOne.get(pickedApartmentClientOne);
             RentalTransaction transactionClientOne = new RentalTransaction(apartmentToBeRented, agentForClientOne, clientOne, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
             transactionClientOne.printTransaction();
+            myAgency.addRentalTransaction(transactionClientOne);
         } else {
             System.out.println("Can't rent because there are no suitable apartments");
         }
@@ -79,6 +81,7 @@ public class Main {
             Apartment apartmentToBeBought = suitableApartmentsForClientTwo.get(pickedApartmentClientTwo);
             BuyTransaction transactionClientTwo = new BuyTransaction(apartmentToBeBought, agentForClientTwo, clientTwo);
             transactionClientTwo.printTransaction();
+            myAgency.addBuyTransaction(transactionClientTwo);
         } else {
             System.out.println("Can't buy because there are no suitable apartments");
         }

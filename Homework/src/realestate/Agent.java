@@ -1,4 +1,4 @@
-package rentalcompany;
+package realestate;
 
 import java.util.List;
 

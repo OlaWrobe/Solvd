@@ -1,4 +1,4 @@
-package rentalcompany;
+package realestate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,14 +8,14 @@ public class RealEstateAgency {
     private List<Agent> agents;
     private List<Client> clients;
     private List<RentalTransaction> rentalTransactions;
-    private List<Bill> bills;
+    private List<BuyTransaction> buyTransactions;
 
-    public RealEstateAgency(List<Apartment> apartments, List<Agent> agents, List<Client> clients, List<RentalTransaction> rentalTransactions, List<Bill> bills) {
+    public RealEstateAgency(List<Apartment> apartments, List<Agent> agents, List<Client> clients) {
         this.apartments = apartments;
         this.agents = agents;
         this.clients = clients;
-        this.rentalTransactions = rentalTransactions;
-        this.bills = bills;
+        this.rentalTransactions = new ArrayList<>();
+        this.buyTransactions = new ArrayList<>();
     }
     public List<Apartment> getApartments() {
         return apartments;
@@ -47,11 +47,11 @@ public class RealEstateAgency {
     public void setTransactions(List<RentalTransaction> rentalTransactions) {
         this.rentalTransactions = rentalTransactions;
     }
-    public List<Bill> getServices(){
-    return this.bills;
+    public List<BuyTransaction> getBuyTransaction(){
+    return this.buyTransactions;
     }
-    public void setServices(List<Bill> bills){
-        this.bills = bills;
+    public void setBuyTransactions(List<BuyTransaction> buyTransactions){
+        this.buyTransactions = buyTransactions;
     }
 
     public List<Apartment> findSuitableApartments(Client client)
@@ -89,6 +89,14 @@ public class RealEstateAgency {
         }
         System.out.println("No suitable agents");
         return null;
+    }
+    public void addRentalTransaction(RentalTransaction rentalTransaction)
+    {
+        this.rentalTransactions.add(rentalTransaction);
+    }
+    public void addBuyTransaction(BuyTransaction buyTransaction)
+    {
+        this.buyTransactions.add(buyTransaction);
     }
 
 }

@@ -1,4 +1,4 @@
-package rentalcompany;
+package realestate;
 
 public class Bill {
     static double consultation = 500;
