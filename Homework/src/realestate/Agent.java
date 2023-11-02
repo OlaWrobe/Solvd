@@ -2,12 +2,9 @@ package realestate;
 
 import java.util.List;
 
-public class Agent {
+public class Agent extends Person {
     private static int lastAgentId = 0;
     private int agentId;
-    private String name;
-    private String surname;
-    private ContactInformation contact;
     private List<CityLocation> areasOfWork;
     private int salary;
 
@@ -19,9 +16,11 @@ public class Agent {
         this.areasOfWork = areasOfWork;
         this.salary = salary;
     }
+
     public int getAgentId() {
         return agentId;
     }
+
     public String getName() {
         return name;
     }
@@ -60,6 +59,14 @@ public class Agent {
 
     public void setSalary(int salary) {
         this.salary = salary;
+    }
+
+    public void printAgentInfo() {
+        System.out.println("Agent name: " + this.name + " " + this.surname + "." + " Phone number: " + this.contact.getPhoneNumber() + " Email: " + this.contact.getEmail());
+        System.out.println("Areas of work: ");
+        for (CityLocation area : areasOfWork) {
+            System.out.print(area.getCityName() + " ");
+        }
     }
 
 }

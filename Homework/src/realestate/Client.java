@@ -1,11 +1,8 @@
 package realestate;
 
-public class Client {
+public class Client extends Person {
     private static int lastClientId = 0;
     private int clientId;
-    private String name;
-    private String surname;
-    private ContactInformation contact;
     private ClientForm clientForm;
 
     // Constructor
@@ -51,6 +48,12 @@ public class Client {
 
     public void setClientForm(ClientForm clientForm) {
         this.clientForm = clientForm;
+    }
+
+    public void printClientInfo() {
+        System.out.println("Client name: " + this.name + " " + this.surname + "." + " Phone number: " + this.contact.getPhoneNumber() + " Email: " + this.contact.getEmail());
+        System.out.println("Looking for apartment for " + this.clientForm.getTransactionType() + " with " + this.clientForm.getNumberOfBathrooms() + " bathrooms and " + this.clientForm.getNumberOfBedrooms() + " bedrooms");
+        System.out.println("Budget: " + this.clientForm.getBudget());
     }
 
 }

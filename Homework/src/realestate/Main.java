@@ -50,40 +50,31 @@ public class Main {
 
         RealEstateAgency myAgency = new RealEstateAgency(apartmentList, agentList, clientList);
 
+        System.out.println("All agency agents: ");
+        myAgency.printAllAgents();
+        System.out.println("\nAll clients: ");
+        myAgency.printAllClients();
+        System.out.println("All available apartments: ");
+        myAgency.printAllApartments();
+
         //Finding suitable apartments
         List<Apartment> suitableApartmentsForClientOne = myAgency.findSuitableApartments(clientOne);
         List<Apartment> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo);
 
+        System.out.println("--------------------------------------------------------");
+
         System.out.println("Suitable apartments for customer one");
         for (Apartment ap : suitableApartmentsForClientOne) {
-            System.out.println(ap.getApartmentId() + " price: " + ap.getRentPrice());
+            ap.printApartmentInfo();
         }
+
         System.out.println("Suitable apartments for customer two");
         for (Apartment ap : suitableApartmentsForClientTwo) {
             System.out.println(ap.getApartmentId() + " price: " + ap.getBuyingPrice());
         }
-
-        Agent agentForClientOne = myAgency.findSuitableAgent(clientOne);
-        Agent agentForClientTwo = myAgency.findSuitableAgent(clientTwo);
-
-        int pickedApartmentClientOne = 0;
-        if (!suitableApartmentsForClientOne.isEmpty()) {
-            Apartment apartmentToBeRented = suitableApartmentsForClientOne.get(pickedApartmentClientOne);
-            RentalTransaction transactionClientOne = new RentalTransaction(apartmentToBeRented, agentForClientOne, clientOne, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
-            transactionClientOne.printTransaction();
-            myAgency.addRentalTransaction(transactionClientOne);
-        } else {
-            System.out.println("Can't rent because there are no suitable apartments");
-        }
-        System.out.println("------------------------------------------------");
-        int pickedApartmentClientTwo = 0;
-        if (!suitableApartmentsForClientTwo.isEmpty()) {
-            Apartment apartmentToBeBought = suitableApartmentsForClientTwo.get(pickedApartmentClientTwo);
-            BuyTransaction transactionClientTwo = new BuyTransaction(apartmentToBeBought, agentForClientTwo, clientTwo);
-            transactionClientTwo.printTransaction();
-            myAgency.addBuyTransaction(transactionClientTwo);
-        } else {
-            System.out.println("Can't buy because there are no suitable apartments");
-        }
+        System.out.println("--------------------------------------------------------");
+        System.out.println("Making transactions: ");
+        myAgency.rentApartment(0, clientOne);
+        myAgency.rentApartment(0, clientTwo);
     }
 }

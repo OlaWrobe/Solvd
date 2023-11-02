@@ -5,7 +5,7 @@ public class SortingAlgorythms {
         boolean swapped;
         int temp;
 
-        for (int i = 0; i < array.length-1; i++) {
+        for (int i = 0; i < array.length - 1; i++) {
             swapped = false;
             for (int j = 0; j < array.length - i - 1; j++) {
                 if (array[j] > array[j + 1]) {
@@ -20,10 +20,11 @@ public class SortingAlgorythms {
             }
         }
     }
+
     static void selectionSort(int array[]) {
         int temp;
         int index;
-        for (int i = 0; i < array.length-1; i++) {
+        for (int i = 0; i < array.length - 1; i++) {
             index = i;
             for (int j = i + 1; j < array.length; j++) {
                 if (array[index] > array[j]) {
@@ -36,10 +37,9 @@ public class SortingAlgorythms {
         }
     }
 
-    static void printArray(int array[]){
-        for (int a : array)
-        {
-            System.out.print(a+ " ");
+    static void printArray(int array[]) {
+        for (int a : array) {
+            System.out.print(a + " ");
         }
     }
 
