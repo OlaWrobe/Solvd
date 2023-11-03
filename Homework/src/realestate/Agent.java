@@ -9,40 +9,14 @@ public class Agent extends Person {
     private int salary;
 
     public Agent(String name, String surname, ContactInformation contact, List<CityLocation> areasOfWork, int salary) {
-        this.agentId = ++lastAgentId; // Automatically increment agentId upon object creation
-        this.name = name;
-        this.surname = surname;
-        this.contact = contact;
+        super(name, surname, contact);
+        this.agentId = ++lastAgentId;
         this.areasOfWork = areasOfWork;
         this.salary = salary;
     }
 
     public int getAgentId() {
         return agentId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public ContactInformation getContact() {
-        return contact;
-    }
-
-    public void setContact(ContactInformation contact) {
-        this.contact = contact;
     }
 
     public List<CityLocation> getAreasOfWork() {
@@ -61,12 +35,18 @@ public class Agent extends Person {
         this.salary = salary;
     }
 
-    public void printAgentInfo() {
+    @Override
+    public void printInfo() {
         System.out.println("Agent name: " + this.name + " " + this.surname + "." + " Phone number: " + this.contact.getPhoneNumber() + " Email: " + this.contact.getEmail());
         System.out.println("Areas of work: ");
         for (CityLocation area : areasOfWork) {
             System.out.print(area.getCityName() + " ");
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Person that is an agent with id " + this.agentId;
     }
 
 }

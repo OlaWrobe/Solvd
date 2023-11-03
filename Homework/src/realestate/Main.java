@@ -70,7 +70,7 @@ public class Main {
 
         System.out.println("Suitable apartments for customer two");
         for (Apartment ap : suitableApartmentsForClientTwo) {
-            System.out.println(ap.getApartmentId() + " price: " + ap.getBuyingPrice());
+            ap.printApartmentInfo();
         }
         System.out.println("--------------------------------------------------------");
         System.out.println("Making transactions: ");

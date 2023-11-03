@@ -59,13 +59,11 @@ public class ClientForm {
         this.needsParking = needsParking;
     }
 
-    public TransactionType getTransactionType()
-    {
+    public TransactionType getTransactionType() {
         return this.transactionType;
     }
-    public void setTransactionType(TransactionType transactionType){
+
+    public void setTransactionType(TransactionType transactionType) {
         this.transactionType = transactionType;
     }
-
-
 }

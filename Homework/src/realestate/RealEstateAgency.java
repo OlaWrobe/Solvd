@@ -105,13 +105,13 @@ public class RealEstateAgency {
 
     public void printAllAgents() {
         for (Agent agent : agents) {
-            agent.printAgentInfo();
+            agent.printInfo();
         }
     }
 
     public void printAllClients() {
         for (Client client : clients) {
-            client.printClientInfo();
+            client.printInfo();
         }
     }
 
@@ -126,13 +126,13 @@ public class RealEstateAgency {
         if (this.findSuitableAgent(client) == null || suitableApartments.isEmpty()) {
             return;
         } else {
-            Apartment apartmentToBeRented = suitableApartments.get(apartmentId);
+            Apartment apartmentToBeRentedOrBought = suitableApartments.get(apartmentId);
             if (client.getClientForm().getTransactionType() == TransactionType.RENTAL) {
-                RentalTransaction transaction = new RentalTransaction(apartmentToBeRented, this.findSuitableAgent(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
+                RentalTransaction transaction = new RentalTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
                 this.rentalTransactions.add(transaction);
                 transaction.printTransaction();
             } else if (client.getClientForm().getTransactionType() == TransactionType.BUY) {
-                BuyTransaction transaction = new BuyTransaction(apartmentToBeRented, this.findSuitableAgent(client), client);
+                BuyTransaction transaction = new BuyTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client);
                 this.buyTransactions.add(transaction);
                 transaction.printTransaction();
             } else {

@@ -1,23 +1,23 @@
 package realestate;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public abstract class Transaction {
-    protected int transactionId;
+public class Transaction {
     protected Client client;
     protected Agent agent;
     protected Apartment apartment;
     protected LocalDateTime transactionDateTime;
     protected Bill bill;
 
-    public int getTransactionId() {
-        return transactionId;
+    public Transaction(Apartment apartment, Agent agent, Client client) {
+        this.transactionDateTime = LocalDateTime.now();
+        this.apartment = apartment;
+        this.agent = agent;
+        this.client = client;
+        this.bill = new Bill();
+        bill.calculateBill(TransactionType.RENTAL, apartment.getRentPrice());
     }
-
-    public void setTransactionId(int transactionId) {
-        this.transactionId = transactionId;
-    }
-
 
     public Client getClient() {
         return client;
@@ -59,7 +59,67 @@ public abstract class Transaction {
         this.bill = bill;
     }
 
-    public abstract void printTransaction();
+    public void printTransaction() {
+        System.out.println("Parcel Id: " + apartment.getApartmentId() + " in " + apartment.getLocation().getCityName());
+        System.out.println(" Client: " + client.getName() + " " + client.getSurname());
+        System.out.println("With help of agent " + agent.getName() + " " + agent.getSurname());
+        System.out.println("Time of transaction: " + transactionDateTime);
+        System.out.println("Total " + bill.getBill());
+    }
 
-    ;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+
+        Transaction other = (Transaction) obj;
+
+        if (client == null) {
+            if (other.client != null)
+                return false;
+        } else if (!client.equals(other.client))
+            return false;
+
+        if (agent == null) {
+            if (other.agent != null)
+                return false;
+        } else if (!agent.equals(other.agent))
+            return false;
+
+        if (apartment == null) {
+            if (other.apartment != null)
+                return false;
+        } else if (!apartment.equals(other.apartment))
+            return false;
+
+        if (transactionDateTime == null) {
+            if (other.transactionDateTime != null)
+                return false;
+        } else if (!transactionDateTime.equals(other.transactionDateTime))
+            return false;
+
+        if (bill == null) {
+            if (other.bill != null)
+                return false;
+        } else if (!bill.equals(other.bill))
+            return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (client != null ? client.hashCode() : 0);
+        result = prime * result + (agent != null ? agent.hashCode() : 0);
+        result = prime * result + (apartment != null ? apartment.hashCode() : 0);
+        result = prime * result + (transactionDateTime != null ? transactionDateTime.hashCode() : 0);
+        result = prime * result + (bill != null ? bill.hashCode() : 0);
+        return result;
+    }
+
 }
