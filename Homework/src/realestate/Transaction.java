@@ -1,22 +1,23 @@
 package realestate;
 
-import java.time.LocalDate;
+import realestate.apartment.House;
+
 import java.time.LocalDateTime;
 
 public class Transaction {
     protected Client client;
     protected Agent agent;
-    protected Apartment apartment;
+    protected House house;
     protected LocalDateTime transactionDateTime;
     protected Bill bill;
 
-    public Transaction(Apartment apartment, Agent agent, Client client) {
+    public Transaction(House house, Agent agent, Client client) {
         this.transactionDateTime = LocalDateTime.now();
-        this.apartment = apartment;
+        this.house = house;
         this.agent = agent;
         this.client = client;
         this.bill = new Bill();
-        bill.calculateBill(TransactionType.RENTAL, apartment.getRentPrice());
+        bill.calculateBill(TransactionType.RENTAL, house.getRentPrice());
     }
 
     public Client getClient() {
@@ -35,12 +36,12 @@ public class Transaction {
         this.agent = agent;
     }
 
-    public Apartment getApartment() {
-        return apartment;
+    public House getApartment() {
+        return house;
     }
 
-    public void setApartment(Apartment apartment) {
-        this.apartment = apartment;
+    public void setApartment(House house) {
+        this.house = house;
     }
 
     public LocalDateTime getTransactionDateTime() {
@@ -60,7 +61,7 @@ public class Transaction {
     }
 
     public void printTransaction() {
-        System.out.println("Parcel Id: " + apartment.getApartmentId() + " in " + apartment.getLocation().getCityName());
+        System.out.println("Parcel Id: " + house.getApartmentId() + " in " + house.getLocation().getCityName());
         System.out.println(" Client: " + client.getName() + " " + client.getSurname());
         System.out.println("With help of agent " + agent.getName() + " " + agent.getSurname());
         System.out.println("Time of transaction: " + transactionDateTime);
@@ -90,10 +91,10 @@ public class Transaction {
         } else if (!agent.equals(other.agent))
             return false;
 
-        if (apartment == null) {
-            if (other.apartment != null)
+        if (house == null) {
+            if (other.house != null)
                 return false;
-        } else if (!apartment.equals(other.apartment))
+        } else if (!house.equals(other.house))
             return false;
 
         if (transactionDateTime == null) {
@@ -116,7 +117,7 @@ public class Transaction {
         int result = 1;
         result = prime * result + (client != null ? client.hashCode() : 0);
         result = prime * result + (agent != null ? agent.hashCode() : 0);
-        result = prime * result + (apartment != null ? apartment.hashCode() : 0);
+        result = prime * result + (house != null ? house.hashCode() : 0);
         result = prime * result + (transactionDateTime != null ? transactionDateTime.hashCode() : 0);
         result = prime * result + (bill != null ? bill.hashCode() : 0);
         return result;

@@ -1,13 +1,13 @@
 package realestate;
 
-import java.time.LocalDateTime;
+import realestate.apartment.House;
 
 public class BuyTransaction extends Transaction {
     private static int lastTransactionId = 0;
     private int transactionId;
 
-    public BuyTransaction(Apartment apartment, Agent agent, Client client) {
-        super(apartment, agent, client);
+    public BuyTransaction(House house, Agent agent, Client client) {
+        super(house, agent, client);
         this.transactionId = lastTransactionId;
         lastTransactionId++;
     }
@@ -32,7 +32,7 @@ public class BuyTransaction extends Transaction {
     @Override
     public void printTransaction() {
         System.out.println("Buy transaction Id: " + transactionId);
-        System.out.println("Parcel Id: " + apartment.getApartmentId() + " in " + apartment.getLocation().getCityName());
+        System.out.println("Parcel Id: " + house.getApartmentId() + " in " + house.getLocation().getCityName());
         System.out.println("Rented by " + client.getName() + " " + client.getSurname());
         System.out.println("With help of agent " + agent.getName() + " " + agent.getSurname());
         System.out.println("Time of transaction: " + transactionDateTime);

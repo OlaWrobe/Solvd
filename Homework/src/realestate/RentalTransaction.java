@@ -1,7 +1,8 @@
 package realestate;
 
+import realestate.apartment.House;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 public class RentalTransaction extends Transaction {
     private static int lastTransactionId = 0;
@@ -10,8 +11,8 @@ public class RentalTransaction extends Transaction {
     private LocalDate rentEndDate;
 
     // Constructor
-    public RentalTransaction(Apartment apartment, Agent agent, Client client, LocalDate rentStartDate, LocalDate rentEndDate) {
-        super(apartment, agent, client);
+    public RentalTransaction(House house, Agent agent, Client client, LocalDate rentStartDate, LocalDate rentEndDate) {
+        super(house, agent, client);
         this.transactionId = lastTransactionId;
         this.rentStartDate = rentStartDate;
         this.rentEndDate = rentEndDate;
@@ -54,7 +55,7 @@ public class RentalTransaction extends Transaction {
     @Override
     public void printTransaction() {
         System.out.println("Rent Transaction Id: " + transactionId);
-        System.out.println("Parcel Id: " + apartment.getApartmentId() + " in " + apartment.getLocation().getCityName());
+        System.out.println("Parcel Id: " + house.getApartmentId() + " in " + house.getLocation().getCityName());
         System.out.println("Rented by " + client.getName() + " " + client.getSurname());
         System.out.println("With help of agent " + agent.getName() + " " + agent.getSurname());
         System.out.println("Time of transaction: " + transactionDateTime);

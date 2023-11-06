@@ -1,6 +1,7 @@
 package realestate;
 
-import java.time.LocalDate;
+import realestate.apartment.House;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +20,10 @@ public class Main {
         Agent asia = new Agent("Asia", "Kowalska", asiaContact, asiaLocations, 5000);
 
         //Adding apartments
-        Apartment apartment1 = new Apartment(lublin, 2, 1, false, 2300, 150000);
-        Apartment apartment2 = new Apartment(warszawa, 3, 2, true, 3500, 300000);
-        Apartment apartment3 = new Apartment(warszawa, 2, 1, false, 3200, 320000);
-        Apartment apartment4 = new Apartment(gdansk, 4, 1, false, 5000, 520000);
+        House house1 = new House(lublin, 2, 1, false, 2300, 150000);
+        House house2 = new House(warszawa, 3, 2, true, 3500, 300000);
+        House house3 = new House(warszawa, 2, 1, false, 3200, 320000);
+        House house4 = new House(gdansk, 4, 1, false, 5000, 520000);
 
         //Adding clients
         ClientForm formOne = new ClientForm(3300, 2, 1, warszawa, false, TransactionType.RENTAL);
@@ -35,11 +36,11 @@ public class Main {
         Client clientTwo = new Client("Two", "Second", clientTwoContact, formTwo);
 
         //Creating a real estate agency
-        List<Apartment> apartmentList = new ArrayList<>();
-        apartmentList.add(apartment1);
-        apartmentList.add(apartment2);
-        apartmentList.add(apartment3);
-        apartmentList.add(apartment4);
+        List<House> houseList = new ArrayList<>();
+        houseList.add(house1);
+        houseList.add(house2);
+        houseList.add(house3);
+        houseList.add(house4);
 
         List<Agent> agentList = new ArrayList<>();
         agentList.add(asia);
@@ -48,7 +49,7 @@ public class Main {
         clientList.add(clientOne);
         clientList.add(clientTwo);
 
-        RealEstateAgency myAgency = new RealEstateAgency(apartmentList, agentList, clientList);
+        RealEstateAgency myAgency = new RealEstateAgency(houseList, agentList, clientList);
 
         System.out.println("All agency agents: ");
         myAgency.printAllAgents();
@@ -58,18 +59,18 @@ public class Main {
         myAgency.printAllApartments();
 
         //Finding suitable apartments
-        List<Apartment> suitableApartmentsForClientOne = myAgency.findSuitableApartments(clientOne);
-        List<Apartment> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo);
+        List<House> suitableApartmentsForClientOne = myAgency.findSuitableApartments(clientOne);
+        List<House> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo);
 
         System.out.println("--------------------------------------------------------");
 
         System.out.println("Suitable apartments for customer one");
-        for (Apartment ap : suitableApartmentsForClientOne) {
+        for (House ap : suitableApartmentsForClientOne) {
             ap.printApartmentInfo();
         }
 
         System.out.println("Suitable apartments for customer two");
-        for (Apartment ap : suitableApartmentsForClientTwo) {
+        for (House ap : suitableApartmentsForClientTwo) {
             ap.printApartmentInfo();
         }
         System.out.println("--------------------------------------------------------");

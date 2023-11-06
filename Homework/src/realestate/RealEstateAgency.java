@@ -1,30 +1,32 @@
 package realestate;
 
+import realestate.apartment.House;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class RealEstateAgency {
-    private List<Apartment> apartments;
+    private List<House> houses;
     private List<Agent> agents;
     private List<Client> clients;
     private List<RentalTransaction> rentalTransactions;
     private List<BuyTransaction> buyTransactions;
 
-    public RealEstateAgency(List<Apartment> apartments, List<Agent> agents, List<Client> clients) {
-        this.apartments = apartments;
+    public RealEstateAgency(List<House> houses, List<Agent> agents, List<Client> clients) {
+        this.houses = houses;
         this.agents = agents;
         this.clients = clients;
         this.rentalTransactions = new ArrayList<>();
         this.buyTransactions = new ArrayList<>();
     }
 
-    public List<Apartment> getApartments() {
-        return apartments;
+    public List<House> getApartments() {
+        return houses;
     }
 
-    public void setApartments(List<Apartment> apartments) {
-        this.apartments = apartments;
+    public void setApartments(List<House> houses) {
+        this.houses = houses;
     }
 
     public List<Agent> getAgents() {
@@ -59,12 +61,12 @@ public class RealEstateAgency {
         this.buyTransactions = buyTransactions;
     }
 
-    public List<Apartment> findSuitableApartments(Client client) {
+    public List<House> findSuitableApartments(Client client) {
 
         ClientForm clientForm = client.getClientForm();
-        List<Apartment> finalSuitableApartments = new ArrayList<>();
+        List<House> finalSuitableHouses = new ArrayList<>();
 
-        for (Apartment app : apartments) {
+        for (House app : houses) {
             if (meetsRequirements(clientForm, app)) {
                 double apartmentPrice = clientForm.getTransactionType() == TransactionType.BUY ?
                         app.getBuyingPrice() : clientForm.getTransactionType() == TransactionType.RENTAL ?
@@ -74,21 +76,21 @@ public class RealEstateAgency {
 
                 if (apartmentPrice != 0) {
                     if (budget >= apartmentPrice) {
-                        finalSuitableApartments.add(app);
+                        finalSuitableHouses.add(app);
                     }
                 } else {
                     System.out.println("Incorrect transaction type");
                 }
             }
         }
-        return finalSuitableApartments;
+        return finalSuitableHouses;
     }
 
-    private boolean meetsRequirements(ClientForm requirements, Apartment apartment) {
-        return requirements.getNeedsParking() == apartment.getHasParking()
-                && requirements.getNumberOfBedrooms() <= apartment.getNumberOfBedrooms()
-                && requirements.getNumberOfBathrooms() <= apartment.getNumberOfBathrooms()
-                && requirements.getLocation() == apartment.getLocation();
+    private boolean meetsRequirements(ClientForm requirements, House house) {
+        return requirements.getNeedsParking() == house.getHasParking()
+                && requirements.getNumberOfBedrooms() <= house.getNumberOfBedrooms()
+                && requirements.getNumberOfBathrooms() <= house.getNumberOfBathrooms()
+                && requirements.getLocation() == house.getLocation();
     }
 
     public Agent findSuitableAgent(Client client) {
@@ -116,23 +118,23 @@ public class RealEstateAgency {
     }
 
     public void printAllApartments() {
-        for (Apartment apartment : apartments) {
-            apartment.printApartmentInfo();
+        for (House house : houses) {
+            house.printApartmentInfo();
         }
     }
 
     public void rentApartment(int apartmentId, Client client) {
-        List<Apartment> suitableApartments = this.findSuitableApartments(client);
-        if (this.findSuitableAgent(client) == null || suitableApartments.isEmpty()) {
+        List<House> suitableHouses = this.findSuitableApartments(client);
+        if (this.findSuitableAgent(client) == null || suitableHouses.isEmpty()) {
             return;
         } else {
-            Apartment apartmentToBeRentedOrBought = suitableApartments.get(apartmentId);
+            House houseToBeRentedOrBought = suitableHouses.get(apartmentId);
             if (client.getClientForm().getTransactionType() == TransactionType.RENTAL) {
-                RentalTransaction transaction = new RentalTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
+                RentalTransaction transaction = new RentalTransaction(houseToBeRentedOrBought, this.findSuitableAgent(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
                 this.rentalTransactions.add(transaction);
                 transaction.printTransaction();
             } else if (client.getClientForm().getTransactionType() == TransactionType.BUY) {
-                BuyTransaction transaction = new BuyTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client);
+                BuyTransaction transaction = new BuyTransaction(houseToBeRentedOrBought, this.findSuitableAgent(client), client);
                 this.buyTransactions.add(transaction);
                 transaction.printTransaction();
             } else {
