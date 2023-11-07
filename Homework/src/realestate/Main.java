@@ -1,6 +1,9 @@
 package realestate;
 
-import realestate.apartment.House;
+import realestate.agency.RealEstateAgency;
+import realestate.apartment.Apartment;
+import realestate.person.*;
+import realestate.transactions.TransactionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +23,10 @@ public class Main {
         Agent asia = new Agent("Asia", "Kowalska", asiaContact, asiaLocations, 5000);
 
         //Adding apartments
-        House house1 = new House(lublin, 2, 1, false, 2300, 150000);
-        House house2 = new House(warszawa, 3, 2, true, 3500, 300000);
-        House house3 = new House(warszawa, 2, 1, false, 3200, 320000);
-        House house4 = new House(gdansk, 4, 1, false, 5000, 520000);
+        Apartment house1 = new Apartment(lublin, 2, 1, false, 2300, 150000);
+        Apartment house2 = new Apartment(warszawa, 3, 2, true, 3500, 300000);
+        Apartment house3 = new Apartment(warszawa, 2, 1, false, 3200, 320000);
+        Apartment house4 = new Apartment(gdansk, 4, 1, false, 5000, 520000);
 
         //Adding clients
         ClientForm formOne = new ClientForm(3300, 2, 1, warszawa, false, TransactionType.RENTAL);
@@ -36,7 +39,7 @@ public class Main {
         Client clientTwo = new Client("Two", "Second", clientTwoContact, formTwo);
 
         //Creating a real estate agency
-        List<House> houseList = new ArrayList<>();
+        List<Apartment> houseList = new ArrayList<>();
         houseList.add(house1);
         houseList.add(house2);
         houseList.add(house3);
@@ -59,18 +62,18 @@ public class Main {
         myAgency.printAllApartments();
 
         //Finding suitable apartments
-        List<House> suitableApartmentsForClientOne = myAgency.findSuitableApartments(clientOne);
-        List<House> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo);
+        List<Apartment> suitableApartmentsForClientOne = myAgency.findSuitableApartments(clientOne);
+        List<Apartment> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo);
 
         System.out.println("--------------------------------------------------------");
 
         System.out.println("Suitable apartments for customer one");
-        for (House ap : suitableApartmentsForClientOne) {
+        for (Apartment ap : suitableApartmentsForClientOne) {
             ap.printApartmentInfo();
         }
 
         System.out.println("Suitable apartments for customer two");
-        for (House ap : suitableApartmentsForClientTwo) {
+        for (Apartment ap : suitableApartmentsForClientTwo) {
             ap.printApartmentInfo();
         }
         System.out.println("--------------------------------------------------------");

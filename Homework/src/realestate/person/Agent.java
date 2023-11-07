@@ -1,4 +1,4 @@
-package realestate;
+package realestate.person;
 
 import java.util.List;
 
@@ -42,11 +42,6 @@ public class Agent extends Person {
         for (CityLocation area : areasOfWork) {
             System.out.print(area.getCityName() + " ");
         }
-    }
-
-    @Override
-    public String toString() {
-        return "Person that is an agent with id " + this.agentId;
     }
 
 }

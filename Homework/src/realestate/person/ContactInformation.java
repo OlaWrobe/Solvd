@@ -1,4 +1,4 @@
-package realestate;
+package realestate.person;
 
 public class ContactInformation {
     private String phoneNumber;
@@ -6,6 +6,7 @@ public class ContactInformation {
     private CityLocation cityLocation;
     private String street;
     private String additionalInfoStreet;
+
     public ContactInformation(String phoneNumber, String email, CityLocation cityLocation, String street, String additionalInfoStreet) {
         this.phoneNumber = phoneNumber;
         this.email = email;
@@ -13,6 +14,7 @@ public class ContactInformation {
         this.street = street;
         this.additionalInfoStreet = additionalInfoStreet;
     }
+
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -51,5 +53,10 @@ public class ContactInformation {
 
     public void setAdditionalInfoStreet(String additionalInfoStreet) {
         this.additionalInfoStreet = additionalInfoStreet;
+    }
+
+    @Override
+    public String toString() {
+        return "Phone number: " + this.phoneNumber + "Email: " + this.email + "Localization: " + this.cityLocation.toString() + " Street: " + this.street + this.additionalInfoStreet;
     }
 }

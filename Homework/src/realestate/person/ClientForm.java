@@ -1,4 +1,6 @@
-package realestate;
+package realestate.person;
+
+import realestate.transactions.TransactionType;
 
 public class ClientForm {
     private double budget;
@@ -66,4 +68,5 @@ public class ClientForm {
     public void setTransactionType(TransactionType transactionType) {
         this.transactionType = transactionType;
     }
+
 }

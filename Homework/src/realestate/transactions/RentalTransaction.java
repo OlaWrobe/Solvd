@@ -1,6 +1,8 @@
-package realestate;
+package realestate.transactions;
 
-import realestate.apartment.House;
+import realestate.apartment.Apartment;
+import realestate.person.Agent;
+import realestate.person.Client;
 
 import java.time.LocalDate;
 
@@ -11,11 +13,12 @@ public class RentalTransaction extends Transaction {
     private LocalDate rentEndDate;
 
     // Constructor
-    public RentalTransaction(House house, Agent agent, Client client, LocalDate rentStartDate, LocalDate rentEndDate) {
-        super(house, agent, client);
+    public RentalTransaction(Apartment apartment, Agent agent, Client client, LocalDate rentStartDate, LocalDate rentEndDate) {
+        super(apartment, agent, client);
         this.transactionId = lastTransactionId;
         this.rentStartDate = rentStartDate;
         this.rentEndDate = rentEndDate;
+        this.bill.calculateBill(TransactionType.RENTAL, apartment.getRentPrice());
         lastTransactionId++;
     }
 
@@ -53,14 +56,14 @@ public class RentalTransaction extends Transaction {
     }
 
     @Override
-    public void printTransaction() {
-        System.out.println("Rent Transaction Id: " + transactionId);
-        System.out.println("Parcel Id: " + house.getApartmentId() + " in " + house.getLocation().getCityName());
-        System.out.println("Rented by " + client.getName() + " " + client.getSurname());
-        System.out.println("With help of agent " + agent.getName() + " " + agent.getSurname());
-        System.out.println("Time of transaction: " + transactionDateTime);
-        System.out.println("Rent start date: " + rentStartDate + " Rent end date: " + rentEndDate);
-        System.out.println("Total " + bill.getBill());
+    public String toString() {
+        return "Rent Transaction Id: " + this.transactionId + "\n"
+                + "Parcel Id: " + apartment.getApartmentId() + " in " + apartment.getLocation().getCityName() + "\n"
+                + "Rented by " + client.getName() + " " + client.getSurname() + "\n"
+                + "With help of agent " + agent.getName() + " " + agent.getSurname() + "\n"
+                + "Time of transaction: " + transactionDateTime + "\n"
+                + "Rent start date: " + rentStartDate + " Rent end date: " + rentEndDate + "\n"
+                + "Total " + this.calculateTransactionFee();
     }
 
     @Override
@@ -98,4 +101,5 @@ public class RentalTransaction extends Transaction {
         result = prime * result + (rentEndDate != null ? rentEndDate.hashCode() : 0);
         return result;
     }
+
 }

@@ -1,14 +1,17 @@
-package realestate;
+package realestate.transactions;
 
-import realestate.apartment.House;
+import realestate.apartment.Apartment;
+import realestate.person.Agent;
+import realestate.person.Client;
 
 public class BuyTransaction extends Transaction {
     private static int lastTransactionId = 0;
     private int transactionId;
 
-    public BuyTransaction(House house, Agent agent, Client client) {
-        super(house, agent, client);
+    public BuyTransaction(Apartment apartment, Agent agent, Client client) {
+        super(apartment, agent, client);
         this.transactionId = lastTransactionId;
+        this.bill.calculateBill(TransactionType.BUY, apartment.getBuyingPrice());
         lastTransactionId++;
     }
 
@@ -29,14 +32,15 @@ public class BuyTransaction extends Transaction {
         this.transactionId = transactionId;
     }
 
+
     @Override
-    public void printTransaction() {
-        System.out.println("Buy transaction Id: " + transactionId);
-        System.out.println("Parcel Id: " + house.getApartmentId() + " in " + house.getLocation().getCityName());
-        System.out.println("Rented by " + client.getName() + " " + client.getSurname());
-        System.out.println("With help of agent " + agent.getName() + " " + agent.getSurname());
-        System.out.println("Time of transaction: " + transactionDateTime);
-        System.out.println("Total " + bill.getBill());
+    public String toString() {
+        return "Buy transaction Id: " + transactionId + "\n"
+                + "Parcel Id: " + apartment.getApartmentId() + " in " + apartment.getLocation().getCityName() + "\n"
+                + "Rented by " + client.getName() + " " + client.getSurname() + "\n"
+                + "With help of agent " + agent.getName() + " " + agent.getSurname() + "\n"
+                + "Time of transaction: " + transactionDateTime + "\n"
+                + "Total " + this.calculateTransactionFee();
     }
 
     public boolean equals(Object obj) {

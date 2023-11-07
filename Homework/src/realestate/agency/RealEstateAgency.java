@@ -1,32 +1,45 @@
-package realestate;
+package realestate.agency;
 
-import realestate.apartment.House;
+import realestate.apartment.Apartment;
+import realestate.person.Agent;
+import realestate.person.CityLocation;
+import realestate.person.Client;
+import realestate.person.ClientForm;
+import realestate.transactions.BuyTransaction;
+import realestate.transactions.RentalTransaction;
+import realestate.transactions.Transaction;
+import realestate.transactions.TransactionType;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RealEstateAgency {
-    private List<House> houses;
+public class RealEstateAgency implements IRealEstateAgency {
+    static {
+        System.out.println("Welcome to XYZ Real estate agency! Here are our services:");
+        Bill.printPriceList();
+    }
+
+    private List<Apartment> apartments;
     private List<Agent> agents;
     private List<Client> clients;
     private List<RentalTransaction> rentalTransactions;
     private List<BuyTransaction> buyTransactions;
 
-    public RealEstateAgency(List<House> houses, List<Agent> agents, List<Client> clients) {
-        this.houses = houses;
+    public RealEstateAgency(List<Apartment> apartments, List<Agent> agents, List<Client> clients) {
+        this.apartments = apartments;
         this.agents = agents;
         this.clients = clients;
         this.rentalTransactions = new ArrayList<>();
         this.buyTransactions = new ArrayList<>();
     }
 
-    public List<House> getApartments() {
-        return houses;
+    public List<Apartment> getApartments() {
+        return apartments;
     }
 
-    public void setApartments(List<House> houses) {
-        this.houses = houses;
+    public void setApartments(List<Apartment> apartments) {
+        this.apartments = apartments;
     }
 
     public List<Agent> getAgents() {
@@ -61,12 +74,12 @@ public class RealEstateAgency {
         this.buyTransactions = buyTransactions;
     }
 
-    public List<House> findSuitableApartments(Client client) {
+    public List<Apartment> findSuitableApartments(Client client) {
 
         ClientForm clientForm = client.getClientForm();
-        List<House> finalSuitableHouses = new ArrayList<>();
+        List<Apartment> finalSuitableApartments = new ArrayList<>();
 
-        for (House app : houses) {
+        for (Apartment app : apartments) {
             if (meetsRequirements(clientForm, app)) {
                 double apartmentPrice = clientForm.getTransactionType() == TransactionType.BUY ?
                         app.getBuyingPrice() : clientForm.getTransactionType() == TransactionType.RENTAL ?
@@ -76,21 +89,21 @@ public class RealEstateAgency {
 
                 if (apartmentPrice != 0) {
                     if (budget >= apartmentPrice) {
-                        finalSuitableHouses.add(app);
+                        finalSuitableApartments.add(app);
                     }
                 } else {
                     System.out.println("Incorrect transaction type");
                 }
             }
         }
-        return finalSuitableHouses;
+        return finalSuitableApartments;
     }
 
-    private boolean meetsRequirements(ClientForm requirements, House house) {
-        return requirements.getNeedsParking() == house.getHasParking()
-                && requirements.getNumberOfBedrooms() <= house.getNumberOfBedrooms()
-                && requirements.getNumberOfBathrooms() <= house.getNumberOfBathrooms()
-                && requirements.getLocation() == house.getLocation();
+    private boolean meetsRequirements(ClientForm requirements, Apartment apartments) {
+        return requirements.getNeedsParking() == apartments.getHasParking()
+                && requirements.getNumberOfBedrooms() <= apartments.getNumberOfBedrooms()
+                && requirements.getNumberOfBathrooms() <= apartments.getNumberOfBathrooms()
+                && requirements.getLocation() == apartments.getLocation();
     }
 
     public Agent findSuitableAgent(Client client) {
@@ -118,28 +131,36 @@ public class RealEstateAgency {
     }
 
     public void printAllApartments() {
-        for (House house : houses) {
-            house.printApartmentInfo();
+        for (Apartment apartment : apartments) {
+            apartment.printApartmentInfo();
         }
     }
 
     public void rentApartment(int apartmentId, Client client) {
-        List<House> suitableHouses = this.findSuitableApartments(client);
-        if (this.findSuitableAgent(client) == null || suitableHouses.isEmpty()) {
+        List<Apartment> suitableApartments = this.findSuitableApartments(client);
+        if (this.findSuitableAgent(client) == null || suitableApartments.isEmpty()) {
             return;
         } else {
-            House houseToBeRentedOrBought = suitableHouses.get(apartmentId);
+            Apartment apartmentToBeRentedOrBought = suitableApartments.get(apartmentId);
             if (client.getClientForm().getTransactionType() == TransactionType.RENTAL) {
-                RentalTransaction transaction = new RentalTransaction(houseToBeRentedOrBought, this.findSuitableAgent(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
+                RentalTransaction transaction = new RentalTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
                 this.rentalTransactions.add(transaction);
-                transaction.printTransaction();
+                System.out.print(transaction.toString());
             } else if (client.getClientForm().getTransactionType() == TransactionType.BUY) {
-                BuyTransaction transaction = new BuyTransaction(houseToBeRentedOrBought, this.findSuitableAgent(client), client);
+                BuyTransaction transaction = new BuyTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client);
                 this.buyTransactions.add(transaction);
-                transaction.printTransaction();
+                System.out.print(transaction.toString());
             } else {
                 System.out.println("invalid transaction");
             }
         }
+    }
+
+    public double getIncome() {
+        double total = 0;
+        for (Transaction transaction : buyTransactions) {
+            total = total + transaction.calculateTransactionFee();
+        }
+        return total;
     }
 }

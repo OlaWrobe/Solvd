@@ -1,4 +1,4 @@
-package realestate;
+package realestate.person;
 
 public abstract class Person {
     protected String name;
@@ -37,8 +37,4 @@ public abstract class Person {
 
     public abstract void printInfo();
 
-    @Override
-    public String toString() {
-        return "Person ";
-    }
 }

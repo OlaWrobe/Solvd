@@ -1,4 +1,4 @@
-package realestate;
+package realestate.person;
 
 public class CityLocation {
     private String cityName;

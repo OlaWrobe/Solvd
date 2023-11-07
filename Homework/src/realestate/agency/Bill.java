@@ -1,6 +1,9 @@
-package realestate;
+package realestate.agency;
 
-public class Bill {
+import realestate.transactions.CalculatePayments;
+import realestate.transactions.TransactionType;
+
+public class Bill implements CalculatePayments {
     static double consultation = 500;
     static double tenantRepresentation = 200;
     static double fitOut = 700;
@@ -30,5 +33,13 @@ public class Bill {
             System.out.println("Incorrect transaction type");
         }
         return this.bill;
+    }
+
+    static public void printPriceList() {
+        System.out.println("consultation: " + consultation);
+        System.out.println("tenant representation:" + tenantRepresentation);
+        System.out.println("fit out " + fitOut);
+        System.out.println("Buy mediations: " + buyTransaction);
+        System.out.println("Rent mediations: " + rentTransaction);
     }
 }
