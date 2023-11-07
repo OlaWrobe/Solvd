@@ -85,7 +85,7 @@ public class Apartment implements InformationPrinting {
         } else {
             System.out.print(" Without parking.");
         }
-        System.out.println(" Buying price: " + this.buyingPrice + " Rent price: " + this.rentPrice);
+        System.out.println(" Buying price: " + this.buyingPrice + " Rent price: " + this.rentPrice + "\n");
     }
 
 }

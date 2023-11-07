@@ -1,5 +1,6 @@
 package realestate;
 
+import realestate.agency.AgencyStatus;
 import realestate.agency.RealEstateAgency;
 import realestate.apartment.Apartment;
 import realestate.person.*;
@@ -7,6 +8,7 @@ import realestate.transactions.TransactionType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -23,9 +25,9 @@ public class Main {
         Agent asia = new Agent("Asia", "Kowalska", asiaContact, asiaLocations, 5000);
 
         //Adding apartments
-        Apartment house1 = new Apartment(lublin, 2, 1, false, 2300, 150000);
-        Apartment house2 = new Apartment(warszawa, 3, 2, true, 3500, 300000);
-        Apartment house3 = new Apartment(warszawa, 2, 1, false, 3200, 320000);
+        Apartment house1 = new Apartment(lublin, 2, 1, true, 2300, 150000);
+        Apartment house2 = new Apartment(warszawa, 2, 1, false, 3200, 300000);
+        Apartment house3 = new Apartment(gdansk, 5, 1, false, 3200, 320000);
         Apartment house4 = new Apartment(gdansk, 4, 1, false, 5000, 520000);
 
         //Adding clients
@@ -53,11 +55,13 @@ public class Main {
         clientList.add(clientTwo);
 
         RealEstateAgency myAgency = new RealEstateAgency(houseList, agentList, clientList);
-
+        System.out.println("--------------------------------------------------------");
         System.out.println("All agency agents: ");
         myAgency.printAllAgents();
-        System.out.println("\nAll clients: ");
+        System.out.println("\n--------------------------------------------------------");
+        System.out.println("All clients: ");
         myAgency.printAllClients();
+        System.out.println("--------------------------------------------------------");
         System.out.println("All available apartments: ");
         myAgency.printAllApartments();
 
@@ -76,10 +80,18 @@ public class Main {
         for (Apartment ap : suitableApartmentsForClientTwo) {
             ap.printInfo();
         }
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Make a decision as a customer two, which one will you be buying? 1 or 2 ");
+        int apartment = scanner.nextInt();
+
         System.out.println("--------------------------------------------------------");
         System.out.println("Making transactions: ");
         myAgency.rentApartment(0, clientOne);
-        myAgency.rentApartment(0, clientTwo);
+        System.out.println("\n");
+        myAgency.rentApartment(apartment - 1, clientTwo);
 
+        System.out.println("\n--------------------------------------------------------");
+        AgencyStatus agencyStatus = new AgencyStatus(myAgency);
+        agencyStatus.printInfo();
     }
 }

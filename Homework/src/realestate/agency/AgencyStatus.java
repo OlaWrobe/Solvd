@@ -11,12 +11,12 @@ public final class AgencyStatus implements InformationPrinting {
     private final int propertyCount;
     private final double allTransactionIncome;
 
-    AgencyStatus(LocalDateTime logTime, RealEstateAgency realEstateAgency) {
+    public AgencyStatus(RealEstateAgency realEstateAgency) {
         this.logTime = LocalDateTime.now();
         this.customerCount = realEstateAgency.getClients().size();
         this.agentCount = realEstateAgency.getAgents().size();
         this.propertyCount = realEstateAgency.getApartments().size();
-        allTransactionIncome = realEstateAgency.getIncome();
+        this.allTransactionIncome = realEstateAgency.getIncome();
     }
 
     public LocalDateTime getLogTime() {
@@ -40,11 +40,11 @@ public final class AgencyStatus implements InformationPrinting {
     }
 
     public void printInfo() {
-        System.out.println("Current status of agency: ");
+        System.out.println("\nCurrent status of agency: ");
         System.out.println("Number of workers: " + this.agentCount);
         System.out.println("Number of clients: " + this.customerCount);
         System.out.println("Number of all apartments: " + this.propertyCount);
-        System.out.println("All income: " + this.propertyCount);
+        System.out.println("All income: " + this.allTransactionIncome);
         System.out.println("Status from: " + this.logTime);
     }
 }

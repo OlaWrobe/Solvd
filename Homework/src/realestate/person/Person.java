@@ -39,5 +39,4 @@ public abstract class Person implements InformationPrinting, PersonData {
     }
 
     public abstract void printInfo();
-
 }

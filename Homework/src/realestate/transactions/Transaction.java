@@ -76,4 +76,15 @@ public class Transaction {
                 + "Total " + this.calculateTransactionFee();
     }
 
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (client != null ? client.hashCode() : 0);
+        result = prime * result + (agent != null ? agent.hashCode() : 0);
+        result = prime * result + (apartment != null ? apartment.hashCode() : 0);
+        result = prime * result + (transactionDateTime != null ? transactionDateTime.hashCode() : 0);
+        result = prime * result + (bill != null ? bill.hashCode() : 0);
+        return result;
+    }
 }

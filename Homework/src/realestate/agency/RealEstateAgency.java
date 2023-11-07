@@ -144,6 +144,7 @@ public class RealEstateAgency implements IRealEstateAgency {
                 RentalTransaction transaction = new RentalTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
                 this.rentalTransactions.add(transaction);
                 System.out.print(transaction.toString());
+                apartments.removeIf(apartment -> apartment.getApartmentId() == apartmentToBeRentedOrBought.getApartmentId());
             } else if (client.getClientForm().getTransactionType() == TransactionType.BUY) {
                 BuyTransaction transaction = new BuyTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client);
                 this.buyTransactions.add(transaction);
@@ -157,6 +158,9 @@ public class RealEstateAgency implements IRealEstateAgency {
     public double getIncome() {
         double total = 0;
         for (Transaction transaction : buyTransactions) {
+            total = total + transaction.calculateTransactionFee();
+        }
+        for (Transaction transaction : rentalTransactions) {
             total = total + transaction.calculateTransactionFee();
         }
         return total;

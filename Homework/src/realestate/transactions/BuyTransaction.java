@@ -37,7 +37,7 @@ public class BuyTransaction extends Transaction {
     public String toString() {
         return "Buy transaction Id: " + transactionId + "\n"
                 + "Parcel Id: " + apartment.getApartmentId() + " in " + apartment.getLocation().getCityName() + "\n"
-                + "Rented by " + client.getName() + " " + client.getSurname() + "\n"
+                + "Bought by " + client.getName() + " " + client.getSurname() + "\n"
                 + "With help of agent " + agent.getName() + " " + agent.getSurname() + "\n"
                 + "Time of transaction: " + transactionDateTime + "\n"
                 + "Total " + this.calculateTransactionFee();
