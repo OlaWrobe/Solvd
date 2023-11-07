@@ -1,4 +1,4 @@
-package realestate.agency;
+package realestate.interfaces;
 
 import realestate.apartment.Apartment;
 import realestate.person.Agent;

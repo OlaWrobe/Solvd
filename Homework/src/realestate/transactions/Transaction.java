@@ -1,6 +1,5 @@
 package realestate.transactions;
 
-import realestate.agency.Bill;
 import realestate.apartment.Apartment;
 import realestate.person.Agent;
 import realestate.person.Client;

@@ -1,16 +1,26 @@
 package realestate.agency;
 
-public final class AgencyStatus {
-    public final int customerCount;
-    public final int agentCount;
-    public final int propertyCount;
-    public final double allTransactionIncome;
+import realestate.interfaces.InformationPrinting;
 
-    AgencyStatus(RealEstateAgency realEstateAgency) {
+import java.time.LocalDateTime;
+
+public final class AgencyStatus implements InformationPrinting {
+    private final LocalDateTime logTime;
+    private final int customerCount;
+    private final int agentCount;
+    private final int propertyCount;
+    private final double allTransactionIncome;
+
+    AgencyStatus(LocalDateTime logTime, RealEstateAgency realEstateAgency) {
+        this.logTime = LocalDateTime.now();
         this.customerCount = realEstateAgency.getClients().size();
         this.agentCount = realEstateAgency.getAgents().size();
         this.propertyCount = realEstateAgency.getApartments().size();
         allTransactionIncome = realEstateAgency.getIncome();
+    }
+
+    public LocalDateTime getLogTime() {
+        return logTime;
     }
 
     public int getCustomerCount() {
@@ -27,5 +37,14 @@ public final class AgencyStatus {
 
     public double getAllTransactionIncome() {
         return allTransactionIncome;
+    }
+
+    public void printInfo() {
+        System.out.println("Current status of agency: ");
+        System.out.println("Number of workers: " + this.agentCount);
+        System.out.println("Number of clients: " + this.customerCount);
+        System.out.println("Number of all apartments: " + this.propertyCount);
+        System.out.println("All income: " + this.propertyCount);
+        System.out.println("Status from: " + this.logTime);
     }
 }

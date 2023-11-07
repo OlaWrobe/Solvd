@@ -1,8 +1,9 @@
 package realestate.apartment;
 
 import realestate.person.CityLocation;
+import realestate.interfaces.InformationPrinting;
 
-public class Apartment implements IProperty {
+public class Apartment implements InformationPrinting {
     private static int lastApartmentId = 0;
     private int apartmentId;
     private CityLocation location;
@@ -76,7 +77,7 @@ public class Apartment implements IProperty {
         this.buyingPrice = buyingPrice;
     }
 
-    public void printApartmentInfo() {
+    public void printInfo() {
         System.out.println("Apartment in " + this.location.getCityName());
         System.out.print("No. of rooms: " + this.numberOfBedrooms + " No. of bathrooms " + this.numberOfBathrooms + ".");
         if (hasParking) {

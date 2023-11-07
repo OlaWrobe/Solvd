@@ -5,6 +5,7 @@ import realestate.person.Agent;
 import realestate.person.Client;
 
 public class BuyTransaction extends Transaction {
+    final private static double interestRate = 0.806;
     private static int lastTransactionId = 0;
     private int transactionId;
 
@@ -31,7 +32,6 @@ public class BuyTransaction extends Transaction {
     public void setTransactionId(int transactionId) {
         this.transactionId = transactionId;
     }
-
 
     @Override
     public String toString() {

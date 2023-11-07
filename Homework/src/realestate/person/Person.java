@@ -1,6 +1,9 @@
 package realestate.person;
 
-public abstract class Person {
+import realestate.interfaces.InformationPrinting;
+import realestate.interfaces.PersonData;
+
+public abstract class Person implements InformationPrinting, PersonData {
     protected String name;
     protected String surname;
     protected ContactInformation contact;

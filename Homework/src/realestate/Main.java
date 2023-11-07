@@ -69,16 +69,17 @@ public class Main {
 
         System.out.println("Suitable apartments for customer one");
         for (Apartment ap : suitableApartmentsForClientOne) {
-            ap.printApartmentInfo();
+            ap.printInfo();
         }
 
         System.out.println("Suitable apartments for customer two");
         for (Apartment ap : suitableApartmentsForClientTwo) {
-            ap.printApartmentInfo();
+            ap.printInfo();
         }
         System.out.println("--------------------------------------------------------");
         System.out.println("Making transactions: ");
         myAgency.rentApartment(0, clientOne);
         myAgency.rentApartment(0, clientTwo);
+
     }
 }

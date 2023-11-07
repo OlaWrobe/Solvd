@@ -55,8 +55,4 @@ public class ContactInformation {
         this.additionalInfoStreet = additionalInfoStreet;
     }
 
-    @Override
-    public String toString() {
-        return "Phone number: " + this.phoneNumber + "Email: " + this.email + "Localization: " + this.cityLocation.toString() + " Street: " + this.street + this.additionalInfoStreet;
-    }
 }

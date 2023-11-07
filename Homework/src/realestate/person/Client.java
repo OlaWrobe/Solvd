@@ -1,6 +1,8 @@
 package realestate.person;
 
-public class Client extends Person {
+import realestate.interfaces.InformationPrinting;
+
+public class Client extends Person implements InformationPrinting {
     private static int lastClientId = 0;
     private int clientId;
     private ClientForm clientForm;

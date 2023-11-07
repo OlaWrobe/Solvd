@@ -1,6 +1,8 @@
-package realestate.person;
+package realestate.interfaces;
 
-public interface IPersonData {
+import realestate.person.ContactInformation;
+
+public interface PersonData {
     public String getName();
 
     public String getSurname();

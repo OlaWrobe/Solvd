@@ -1,8 +1,10 @@
 package realestate.person;
 
+import realestate.interfaces.InformationPrinting;
+
 import java.util.List;
 
-public class Agent extends Person {
+public class Agent extends Person implements InformationPrinting {
     private static int lastAgentId = 0;
     private int agentId;
     private List<CityLocation> areasOfWork;

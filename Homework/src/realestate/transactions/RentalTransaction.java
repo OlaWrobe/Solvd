@@ -1,16 +1,21 @@
 package realestate.transactions;
 
 import realestate.apartment.Apartment;
+import realestate.interfaces.Rental;
 import realestate.person.Agent;
 import realestate.person.Client;
 
 import java.time.LocalDate;
+import java.time.Period;
 
-public class RentalTransaction extends Transaction {
+public class RentalTransaction extends Transaction implements Rental {
+    private int utilities = 300;
+    private int insurance = 100;
     private static int lastTransactionId = 0;
     private int transactionId;
     private LocalDate rentStartDate;
     private LocalDate rentEndDate;
+    private LocalDate lastRentPayment;
 
     // Constructor
     public RentalTransaction(Apartment apartment, Agent agent, Client client, LocalDate rentStartDate, LocalDate rentEndDate) {
@@ -19,6 +24,7 @@ public class RentalTransaction extends Transaction {
         this.rentStartDate = rentStartDate;
         this.rentEndDate = rentEndDate;
         this.bill.calculateBill(TransactionType.RENTAL, apartment.getRentPrice());
+        this.lastRentPayment = rentStartDate;
         lastTransactionId++;
     }
 
@@ -53,6 +59,17 @@ public class RentalTransaction extends Transaction {
 
     public void setRentEndDate(LocalDate rentEndDate) {
         this.rentEndDate = rentEndDate;
+    }
+
+    //Methods
+    public void payRent() {
+        this.lastRentPayment = LocalDate.now();
+    }
+
+    public boolean isRentDue() {
+        LocalDate currentDate = LocalDate.now();
+        Period period = Period.between(lastRentPayment, currentDate);
+        return period.getMonths() > 0 || period.getDays() > 30;
     }
 
     @Override

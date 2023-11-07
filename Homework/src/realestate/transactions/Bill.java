@@ -1,9 +1,9 @@
-package realestate.agency;
+package realestate.transactions;
 
-import realestate.transactions.CalculatePayments;
+import realestate.interfaces.Billing;
 import realestate.transactions.TransactionType;
 
-public class Bill implements CalculatePayments {
+public class Bill implements Billing {
     static double consultation = 500;
     static double tenantRepresentation = 200;
     static double fitOut = 700;

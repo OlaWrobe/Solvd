@@ -1,14 +1,12 @@
 package realestate.agency;
 
 import realestate.apartment.Apartment;
+import realestate.interfaces.IRealEstateAgency;
 import realestate.person.Agent;
 import realestate.person.CityLocation;
 import realestate.person.Client;
 import realestate.person.ClientForm;
-import realestate.transactions.BuyTransaction;
-import realestate.transactions.RentalTransaction;
-import realestate.transactions.Transaction;
-import realestate.transactions.TransactionType;
+import realestate.transactions.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -132,7 +130,7 @@ public class RealEstateAgency implements IRealEstateAgency {
 
     public void printAllApartments() {
         for (Apartment apartment : apartments) {
-            apartment.printApartmentInfo();
+            apartment.printInfo();
         }
     }
 
