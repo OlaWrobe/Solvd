@@ -2,13 +2,11 @@ package realestate.person;
 
 import realestate.Exceptions.IncorrectAppointmentDateException;
 import realestate.appointments.Appointment;
-import realestate.appointments.Purpose;
 import realestate.appointments.Status;
 import realestate.interfaces.AppointmentHandling;
 import realestate.interfaces.InformationPrinting;
 import realestate.transactions.BuyTransaction;
 import realestate.transactions.RentalTransaction;
-import realestate.transactions.Transaction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

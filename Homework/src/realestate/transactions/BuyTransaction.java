@@ -1,8 +1,5 @@
 package realestate.transactions;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import realestate.Main;
 import realestate.apartment.Apartment;
 import realestate.person.Agent;
 import realestate.person.Client;

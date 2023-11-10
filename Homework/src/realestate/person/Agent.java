@@ -5,7 +5,6 @@ import org.apache.logging.log4j.Logger;
 import realestate.appointments.Appointment;
 import realestate.interfaces.InformationPrinting;
 import realestate.interfaces.LocationInfo;
-import realestate.transactions.Bill;
 
 import java.time.LocalDateTime;
 

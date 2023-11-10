@@ -2,7 +2,6 @@ package realestate.agency;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import realestate.Main;
 import realestate.interfaces.InformationPrinting;
 
 import java.time.LocalDateTime;

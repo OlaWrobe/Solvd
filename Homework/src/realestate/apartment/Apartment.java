@@ -2,10 +2,8 @@ package realestate.apartment;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import realestate.Main;
 import realestate.person.CityLocation;
 import realestate.interfaces.InformationPrinting;
-import realestate.person.Client;
 
 public class Apartment implements InformationPrinting {
     private final static Logger LOGGER = LogManager.getLogger(Apartment.class);
