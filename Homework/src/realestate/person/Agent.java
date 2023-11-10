@@ -1,19 +1,25 @@
 package realestate.person;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import realestate.appointments.Appointment;
 import realestate.interfaces.InformationPrinting;
+import realestate.interfaces.LocationInfo;
+import realestate.transactions.Bill;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-public class Agent extends Person implements InformationPrinting {
+public class Agent extends Person implements InformationPrinting, LocationInfo {
+    private final static Logger LOGGER = LogManager.getLogger(Agent.class);
     private static int lastAgentId = 0;
     private int agentId;
-    private List<CityLocation> areasOfWork;
+    private CityLocation cityLocation;
     private int salary;
 
-    public Agent(String name, String surname, ContactInformation contact, List<CityLocation> areasOfWork, int salary) {
+    public Agent(String name, String surname, ContactInformation contact, CityLocation cityLocation, int salary) {
         super(name, surname, contact);
         this.agentId = ++lastAgentId;
-        this.areasOfWork = areasOfWork;
+        this.cityLocation = cityLocation;
         this.salary = salary;
     }
 
@@ -21,12 +27,13 @@ public class Agent extends Person implements InformationPrinting {
         return agentId;
     }
 
-    public List<CityLocation> getAreasOfWork() {
-        return areasOfWork;
+
+    public CityLocation getCityLocation() {
+        return cityLocation;
     }
 
-    public void setAreasOfWork(List<CityLocation> areasOfWork) {
-        this.areasOfWork = areasOfWork;
+    public void setCityLocation(CityLocation cityLocation) {
+        this.cityLocation = cityLocation;
     }
 
     public int getSalary() {
@@ -39,11 +46,26 @@ public class Agent extends Person implements InformationPrinting {
 
     @Override
     public void printInfo() {
-        System.out.println("Agent name: " + this.name + " " + this.surname + "." + " Phone number: " + this.contact.getPhoneNumber() + " Email: " + this.contact.getEmail());
-        System.out.println("Areas of work: ");
-        for (CityLocation area : areasOfWork) {
-            System.out.print(area.getCityName() + " ");
-        }
+        LOGGER.info("Agent name: " + this.name + " " + this.surname + "." + " Phone number: " + this.contact.getPhoneNumber() + " Email: " + this.contact.getEmail() + "Area of work: " + this.cityLocation.getCityName());
     }
 
+    @Override
+    public void nearestAppointmentNotification() {
+        Appointment nearestAppointment = null;
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Appointment appointment : this.appointments) {
+            if (appointment.getAppointmentDateTime().isAfter(now)) {
+                if (nearestAppointment == null || appointment.getAppointmentDateTime().isBefore(nearestAppointment.getAppointmentDateTime())) {
+                    nearestAppointment = appointment;
+                }
+            }
+        }
+
+        if (nearestAppointment != null) {
+            LOGGER.info("Nearest appointment for agent is at: " + nearestAppointment.getAppointmentDateTime());
+        } else {
+            LOGGER.info("There are no nearest appointments");
+        }
+    }
 }

@@ -63,7 +63,7 @@ public class Transaction {
     }
 
     public final double calculateTransactionFee() {
-        double transactionFee = this.bill.getBill() + this.bill.getBill() * this.fee;
+        double transactionFee = this.bill.getAmount() * this.fee;
         return transactionFee;
     }
 
@@ -73,7 +73,7 @@ public class Transaction {
                 + " Client: " + client.getName() + " " + client.getSurname() + "\n"
                 + "With help of agent " + agent.getName() + " " + agent.getSurname() + "\n"
                 + "Time of transaction: " + transactionDateTime + "\n"
-                + "Total " + this.calculateTransactionFee();
+                + "Total " + this.bill;
     }
 
     @Override

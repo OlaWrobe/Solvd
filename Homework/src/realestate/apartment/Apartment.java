@@ -1,9 +1,14 @@
 package realestate.apartment;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import realestate.Main;
 import realestate.person.CityLocation;
 import realestate.interfaces.InformationPrinting;
+import realestate.person.Client;
 
 public class Apartment implements InformationPrinting {
+    private final static Logger LOGGER = LogManager.getLogger(Apartment.class);
     private static int lastApartmentId = 0;
     private int apartmentId;
     private CityLocation location;
@@ -25,8 +30,22 @@ public class Apartment implements InformationPrinting {
     }
 
     // Getters and setters
+
+
+    public static int getLastApartmentId() {
+        return lastApartmentId;
+    }
+
+    public static void setLastApartmentId(int lastApartmentId) {
+        Apartment.lastApartmentId = lastApartmentId;
+    }
+
     public int getApartmentId() {
         return apartmentId;
+    }
+
+    public void setApartmentId(int apartmentId) {
+        this.apartmentId = apartmentId;
     }
 
     public CityLocation getLocation() {
@@ -78,14 +97,15 @@ public class Apartment implements InformationPrinting {
     }
 
     public void printInfo() {
-        System.out.println("Apartment in " + this.location.getCityName());
-        System.out.print("No. of rooms: " + this.numberOfBedrooms + " No. of bathrooms " + this.numberOfBathrooms + ".");
+        String parking;
         if (hasParking) {
-            System.out.print(" With parking.");
+            parking = " With parking.";
         } else {
-            System.out.print(" Without parking.");
+            parking = " Without parking.";
         }
-        System.out.println(" Buying price: " + this.buyingPrice + " Rent price: " + this.rentPrice + "\n");
-    }
 
+        LOGGER.info("Apartment number " + this.apartmentId + " in " + this.location.getCityName() + "\n" +
+                "No. of rooms: " + this.numberOfBedrooms + " No. of bathrooms " + this.numberOfBathrooms + "." + "\n"
+                + " Buying price: " + this.buyingPrice + " Rent price: " + this.rentPrice + "\n");
+    }
 }

@@ -1,17 +1,34 @@
 package realestate.person;
 
+import realestate.Exceptions.IncorrectAppointmentDateException;
+import realestate.appointments.Appointment;
+import realestate.appointments.Purpose;
+import realestate.appointments.Status;
+import realestate.interfaces.AppointmentHandling;
 import realestate.interfaces.InformationPrinting;
-import realestate.interfaces.PersonData;
+import realestate.transactions.BuyTransaction;
+import realestate.transactions.RentalTransaction;
+import realestate.transactions.Transaction;
 
-public abstract class Person implements InformationPrinting, PersonData {
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Person implements InformationPrinting, AppointmentHandling {
     protected String name;
     protected String surname;
     protected ContactInformation contact;
+    protected List<BuyTransaction> buyTransactions;
+    protected List<RentalTransaction> rentalTransactions;
+    protected List<Appointment> appointments;
 
     public Person(String name, String surname, ContactInformation contact) {
         this.name = name;
         this.surname = surname;
         this.contact = contact;
+        this.buyTransactions = new ArrayList<>();
+        this.rentalTransactions = new ArrayList<>();
+        this.appointments = new ArrayList<>();
     }
 
     public String getName() {
@@ -38,5 +55,31 @@ public abstract class Person implements InformationPrinting, PersonData {
         this.contact = contact;
     }
 
-    public abstract void printInfo();
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
+    public void closeAppointment(Appointment appointment) {
+        for (Appointment app : this.appointments) {
+            if (appointment.equals(app)) {
+                app.setStatus(Status.CANCELLED);
+            }
+        }
+    }
+
+    public void makeAppointment(Appointment appointment) throws IncorrectAppointmentDateException {
+        if (appointment.getAppointmentDateTime().isAfter(LocalDateTime.now())) {
+            appointment.setStatus(Status.REQUESTED);
+            this.appointments.add(appointment);
+        } else {
+            appointment.setStatus(Status.CANCELLED);
+            throw new IncorrectAppointmentDateException("Date before today");
+        }
+    }
+
+    public abstract void nearestAppointmentNotification();
 }

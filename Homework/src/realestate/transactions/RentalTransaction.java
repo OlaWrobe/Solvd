@@ -1,16 +1,12 @@
 package realestate.transactions;
 
 import realestate.apartment.Apartment;
-import realestate.interfaces.Rental;
 import realestate.person.Agent;
 import realestate.person.Client;
 
 import java.time.LocalDate;
-import java.time.Period;
 
-public class RentalTransaction extends Transaction implements Rental {
-    private int utilities = 300;
-    private int insurance = 100;
+public class RentalTransaction extends Transaction {
     private static int lastTransactionId = 0;
     private int transactionId;
     private LocalDate rentStartDate;
@@ -64,12 +60,6 @@ public class RentalTransaction extends Transaction implements Rental {
     //Methods
     public void payRent() {
         this.lastRentPayment = LocalDate.now();
-    }
-
-    public boolean isRentDue() {
-        LocalDate currentDate = LocalDate.now();
-        Period period = Period.between(lastRentPayment, currentDate);
-        return period.getMonths() > 0 || period.getDays() > 30;
     }
 
     @Override

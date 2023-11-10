@@ -1,8 +1,19 @@
 package realestate.person;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import realestate.apartment.Apartment;
+import realestate.appointments.Appointment;
+import realestate.appointments.Status;
+import realestate.interfaces.AppointmentHandling;
 import realestate.interfaces.InformationPrinting;
+import realestate.interfaces.RentalActions;
+import realestate.transactions.RentalTransaction;
 
-public class Client extends Person implements InformationPrinting {
+import java.time.LocalDateTime;
+
+public class Client extends Person implements InformationPrinting, AppointmentHandling, RentalActions {
+    private final static Logger LOGGER = LogManager.getLogger(Client.class);
     private static int lastClientId = 0;
     private int clientId;
     private ClientForm clientForm;
@@ -32,15 +43,47 @@ public class Client extends Person implements InformationPrinting {
 
     @Override
     public void printInfo() {
-        System.out.println("Client name: " + this.name + " " + this.surname + "." + " Phone number: " + this.contact.getPhoneNumber() + " Email: " + this.contact.getEmail());
-        System.out.println("Looking for apartment for " + this.clientForm.getTransactionType() + " with "
-                + this.clientForm.getNumberOfBedrooms() + " bedrooms and "
-                + this.clientForm.getNumberOfBathrooms() + " bathrooms");
+        String parking;
         if (this.clientForm.getNeedsParking()) {
-            System.out.println("With parking");
+            parking = "With parking";
         } else {
-            System.out.println("Without parking");
+            parking = "Without parking";
         }
-        System.out.println("Budget: " + this.clientForm.getBudget() + "\n");
+        LOGGER.info("Client name: " + this.name + " " + this.surname + "." + " Phone number: " + this.contact.getPhoneNumber() + " Email: " + this.contact.getEmail() + "\n"
+                + "Looking for apartment for " + this.clientForm.getTransactionType() + " with "
+                + this.clientForm.getNumberOfBedrooms() + " bedrooms and "
+                + this.clientForm.getNumberOfBathrooms() + " bathrooms" + "\n" + parking + "Budget: " + this.clientForm.getBudget() + "\n");
     }
+
+    @Override
+    public void nearestAppointmentNotification() {
+        Appointment nearestAppointment = null;
+        LocalDateTime now = LocalDateTime.now();
+
+        for (Appointment appointment : this.appointments) {
+            if (appointment.getAppointmentDateTime().isAfter(now) && appointment.getStatus() != Status.CANCELLED) {
+                if (nearestAppointment == null || appointment.getAppointmentDateTime().isBefore(nearestAppointment.getAppointmentDateTime())) {
+                    nearestAppointment = appointment;
+                }
+            }
+        }
+        if (nearestAppointment != null) {
+            LOGGER.info("Nearest appointment for client is at: " + nearestAppointment.getAppointmentDateTime());
+        } else {
+            LOGGER.info("No appointments");
+        }
+    }
+
+    public void payRent(Apartment apartment) {
+        for (RentalTransaction transaction : rentalTransactions) {
+            if (transaction.getApartment().equals(apartment)) {
+                transaction.payRent();
+            }
+        }
+    }
+
+    public void addAppointment(Appointment appointment) {
+        this.appointments.add(appointment);
+    }
+
 }

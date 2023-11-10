@@ -1,11 +1,13 @@
 package realestate.transactions;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import realestate.Main;
 import realestate.apartment.Apartment;
 import realestate.person.Agent;
 import realestate.person.Client;
 
 public class BuyTransaction extends Transaction {
-    final private static double interestRate = 0.806;
     private static int lastTransactionId = 0;
     private int transactionId;
 
@@ -40,7 +42,7 @@ public class BuyTransaction extends Transaction {
                 + "Bought by " + client.getName() + " " + client.getSurname() + "\n"
                 + "With help of agent " + agent.getName() + " " + agent.getSurname() + "\n"
                 + "Time of transaction: " + transactionDateTime + "\n"
-                + "Total " + this.calculateTransactionFee();
+                + "Total " + this.bill;
     }
 
     public boolean equals(Object obj) {

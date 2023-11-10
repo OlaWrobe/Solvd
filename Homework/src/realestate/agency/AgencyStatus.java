@@ -1,10 +1,14 @@
 package realestate.agency;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import realestate.Main;
 import realestate.interfaces.InformationPrinting;
 
 import java.time.LocalDateTime;
 
 public final class AgencyStatus implements InformationPrinting {
+    private final static Logger LOGGER = LogManager.getLogger(AgencyStatus.class);
     private final LocalDateTime logTime;
     private final int customerCount;
     private final int agentCount;
@@ -40,11 +44,11 @@ public final class AgencyStatus implements InformationPrinting {
     }
 
     public void printInfo() {
-        System.out.println("\nCurrent status of agency: ");
-        System.out.println("Number of workers: " + this.agentCount);
-        System.out.println("Number of clients: " + this.customerCount);
-        System.out.println("Number of all apartments: " + this.propertyCount);
-        System.out.println("All income: " + this.allTransactionIncome);
-        System.out.println("Status from: " + this.logTime);
+        LOGGER.info("Current status of agency: " + "\n"
+                + "Number of workers: " + this.agentCount + "\n"
+                + "Number of clients: " + this.customerCount + "\n"
+                + "Number of all apartments: " + this.propertyCount + "\n"
+                + "All income: " + this.allTransactionIncome + "\n"
+                + "Status from: " + this.logTime);
     }
 }

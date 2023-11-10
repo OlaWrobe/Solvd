@@ -1,5 +1,7 @@
 package realestate.person;
 
+import realestate.Exceptions.MissingContactInformationExeption;
+
 public class ContactInformation {
     private String phoneNumber;
     private String email;
@@ -7,7 +9,10 @@ public class ContactInformation {
     private String street;
     private String additionalInfoStreet;
 
-    public ContactInformation(String phoneNumber, String email, CityLocation cityLocation, String street, String additionalInfoStreet) {
+    public ContactInformation(String phoneNumber, String email, CityLocation cityLocation, String street, String additionalInfoStreet) throws MissingContactInformationExeption {
+        if (phoneNumber == null || email == null && cityLocation == null && street == null) {
+            throw new MissingContactInformationExeption("Missing some of the information");
+        }
         this.phoneNumber = phoneNumber;
         this.email = email;
         this.cityLocation = cityLocation;

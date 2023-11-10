@@ -1,5 +1,6 @@
 package realestate.interfaces;
 
+import realestate.Exceptions.InvalidApartmentIdException;
 import realestate.apartment.Apartment;
 import realestate.person.Agent;
 import realestate.person.Client;
@@ -7,15 +8,15 @@ import realestate.person.Client;
 import java.util.List;
 
 public interface IRealEstateAgency {
-    List<Apartment> findSuitableApartments(Client client);
+    public List<Apartment> findSuitableApartments(Client client);
 
-    Agent findSuitableAgent(Client client);
+    public Agent findSuitableAgent(Client client);
 
-    void printAllAgents();
+    public void printAllAgents();
 
-    void printAllClients();
+    public void printAllClients();
 
-    void printAllApartments();
+    public void printAllApartments();
 
-    void rentApartment(int apartmentId, Client client);
+    public void rentApartment(int apartmentId, Client client) throws InvalidApartmentIdException;
 }

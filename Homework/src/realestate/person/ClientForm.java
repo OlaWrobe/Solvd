@@ -1,21 +1,22 @@
 package realestate.person;
 
+import realestate.interfaces.LocationInfo;
 import realestate.transactions.TransactionType;
 
-public class ClientForm {
+public class ClientForm implements LocationInfo {
     private double budget;
     private int numberOfBedrooms;
     private int numberOfBathrooms;
-    private CityLocation location;
+    private CityLocation cityLocation;
     private boolean needsParking;
     private TransactionType transactionType;
 
     // Constructor
-    public ClientForm(double budget, int numberOfBedrooms, int numberOfBathrooms, CityLocation location, boolean needsParking, TransactionType transactionType) {
+    public ClientForm(double budget, int numberOfBedrooms, int numberOfBathrooms, CityLocation cityLocation, boolean needsParking, TransactionType transactionType) {
         this.budget = budget;
         this.numberOfBedrooms = numberOfBedrooms;
         this.numberOfBathrooms = numberOfBathrooms;
-        this.location = location;
+        this.cityLocation = cityLocation;
         this.needsParking = needsParking;
         this.transactionType = transactionType;
     }
@@ -45,12 +46,13 @@ public class ClientForm {
         this.numberOfBathrooms = numberOfBathrooms;
     }
 
-    public CityLocation getLocation() {
-        return location;
+    @Override
+    public CityLocation getCityLocation() {
+        return cityLocation;
     }
 
-    public void setLocation(CityLocation location) {
-        this.location = location;
+    public void setCityLocation(CityLocation cityLocation) {
+        this.cityLocation = cityLocation;
     }
 
     public boolean getNeedsParking() {

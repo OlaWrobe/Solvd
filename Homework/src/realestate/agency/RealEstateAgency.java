@@ -1,7 +1,17 @@
 package realestate.agency;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import realestate.Exceptions.IncorrectAppointmentDateException;
+import realestate.Exceptions.InvalidApartmentIdException;
+import realestate.Exceptions.InvalidTransactionTypeException;
 import realestate.apartment.Apartment;
+import realestate.appointments.Appointment;
+import realestate.appointments.Status;
+import realestate.interfaces.AppointmentHandling;
 import realestate.interfaces.IRealEstateAgency;
+import realestate.interfaces.LocationInfo;
+import realestate.interfaces.RentalActions;
 import realestate.person.Agent;
 import realestate.person.CityLocation;
 import realestate.person.Client;
@@ -9,20 +19,25 @@ import realestate.person.ClientForm;
 import realestate.transactions.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RealEstateAgency implements IRealEstateAgency {
+public class RealEstateAgency implements IRealEstateAgency, LocationInfo, AppointmentHandling, RentalActions {
+    private final static Logger LOGGER = LogManager.getLogger(RealEstateAgency.class);
+
     static {
-        System.out.println("Welcome to XYZ Real estate agency! Here are our services:");
+        LOGGER.info("Welcome to XYZ Real estate agency! Here are our services:");
         Bill.printPriceList();
     }
 
+    private CityLocation cityLocation;
     private List<Apartment> apartments;
     private List<Agent> agents;
     private List<Client> clients;
     private List<RentalTransaction> rentalTransactions;
     private List<BuyTransaction> buyTransactions;
+    private List<Appointment> appointments;
 
     public RealEstateAgency(List<Apartment> apartments, List<Agent> agents, List<Client> clients) {
         this.apartments = apartments;
@@ -72,6 +87,15 @@ public class RealEstateAgency implements IRealEstateAgency {
         this.buyTransactions = buyTransactions;
     }
 
+    @Override
+    public CityLocation getCityLocation() {
+        return cityLocation;
+    }
+
+    public void setCityLocation(CityLocation cityLocation) {
+        this.cityLocation = cityLocation;
+    }
+
     public List<Apartment> findSuitableApartments(Client client) {
 
         ClientForm clientForm = client.getClientForm();
@@ -90,7 +114,7 @@ public class RealEstateAgency implements IRealEstateAgency {
                         finalSuitableApartments.add(app);
                     }
                 } else {
-                    System.out.println("Incorrect transaction type");
+                    throw new InvalidTransactionTypeException("Incorrect transaction type");
                 }
             }
         }
@@ -101,18 +125,16 @@ public class RealEstateAgency implements IRealEstateAgency {
         return requirements.getNeedsParking() == apartments.getHasParking()
                 && requirements.getNumberOfBedrooms() <= apartments.getNumberOfBedrooms()
                 && requirements.getNumberOfBathrooms() <= apartments.getNumberOfBathrooms()
-                && requirements.getLocation() == apartments.getLocation();
+                && requirements.getCityLocation() == apartments.getLocation();
     }
 
     public Agent findSuitableAgent(Client client) {
         for (Agent agent : agents) {
-            for (CityLocation area : agent.getAreasOfWork()) {
-                if (client.getContact().getCityLocation() == area) {
-                    return agent;
-                }
+            if (client.getContact().getCityLocation() == agent.getCityLocation()) {
+                return agent;
             }
         }
-        System.out.println("No suitable agents");
+        LOGGER.info("No suitable agents");
         return null;
     }
 
@@ -134,35 +156,81 @@ public class RealEstateAgency implements IRealEstateAgency {
         }
     }
 
-    public void rentApartment(int apartmentId, Client client) {
+    public void rentApartment(int apartmentId, Client client) throws InvalidApartmentIdException {
         List<Apartment> suitableApartments = this.findSuitableApartments(client);
-        if (this.findSuitableAgent(client) == null || suitableApartments.isEmpty()) {
-            return;
-        } else {
-            Apartment apartmentToBeRentedOrBought = suitableApartments.get(apartmentId);
+
+        Apartment apartmentToBeRentedOrBought = suitableApartments.stream()
+                .filter(apartment -> apartment.getApartmentId() == apartmentId)
+                .findFirst()
+                .orElse(null);
+
+        if (apartmentToBeRentedOrBought != null) {
             if (client.getClientForm().getTransactionType() == TransactionType.RENTAL) {
                 RentalTransaction transaction = new RentalTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
                 this.rentalTransactions.add(transaction);
-                System.out.print(transaction.toString());
+                LOGGER.info(transaction.toString());
                 apartments.removeIf(apartment -> apartment.getApartmentId() == apartmentToBeRentedOrBought.getApartmentId());
             } else if (client.getClientForm().getTransactionType() == TransactionType.BUY) {
                 BuyTransaction transaction = new BuyTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client);
                 this.buyTransactions.add(transaction);
-                System.out.print(transaction.toString());
+                LOGGER.info(transaction.toString());
             } else {
-                System.out.println("invalid transaction");
+                throw new InvalidTransactionTypeException("Incorrect transaction type");
             }
+        } else {
+            throw new InvalidApartmentIdException("Apartment with index " + apartmentId + " not found.");
         }
     }
 
     public double getIncome() {
         double total = 0;
         for (Transaction transaction : buyTransactions) {
-            total = total + transaction.calculateTransactionFee();
+            total = total + transaction.calculateTransactionFee() + transaction.getBill().getAmount();
         }
         for (Transaction transaction : rentalTransactions) {
-            total = total + transaction.calculateTransactionFee();
+            total = total + transaction.calculateTransactionFee() + transaction.getBill().getAmount();
         }
         return total;
+    }
+
+    public void closeAppointment(Appointment appointment) {
+        for (Appointment app : this.appointments) {
+            if (appointment.equals(app)) {
+                app.setStatus(Status.CANCELLED);
+            }
+        }
+    }
+
+    public void makeAppointment(Appointment appointment) throws IncorrectAppointmentDateException {
+        if (appointment.getAppointmentDateTime().isAfter(LocalDateTime.now())) {
+            appointment.setStatus(Status.PLANNED);
+            this.appointments.add(appointment);
+            for (Client client : clients) {
+                if (client.equals(appointment.getClient())) {
+                    client.addAppointment(appointment);
+                }
+            }
+        } else {
+            appointment.setStatus(Status.CANCELLED);
+            throw new IncorrectAppointmentDateException("Date before today");
+        }
+    }
+
+    public void payRent(Apartment apartment) {
+        for (RentalTransaction transaction : rentalTransactions) {
+            if (transaction.getApartment().equals(apartment)) {
+                transaction.payRent();
+            }
+        }
+    }
+
+    public void acceptAppointment(Client client, LocalDateTime date) {
+        for (Appointment app : client.getAppointments()) {
+            if (app.getAppointmentDateTime() == date) {
+                app.setStatus(Status.PLANNED);
+                appointments.add(app);
+                break;
+            }
+        }
     }
 }

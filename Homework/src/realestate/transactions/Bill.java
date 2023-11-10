@@ -1,45 +1,48 @@
 package realestate.transactions;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import realestate.Exceptions.InvalidTransactionTypeException;
 import realestate.interfaces.Billing;
-import realestate.transactions.TransactionType;
 
 public class Bill implements Billing {
-    static double consultation = 500;
-    static double tenantRepresentation = 200;
-    static double fitOut = 700;
-    static double buyTransaction = 2000;
-    static double rentTransaction = 500;
-    private double bill;
+    private final static Logger LOGGER = LogManager.getLogger(Bill.class);
+    private static final double CONSULTATION = 500;
+    private static final double TENANT_REPRESENTATION = 200;
+    private static final double FIT_OUT = 700;
+    private static final double BUY_TRANSACTION = 2000;
+    private static final double RENT_TRANSACTION = 500;
+    private double amount;
 
     public Bill() {
-        this.bill = 0;
+        this.amount = 0;
     }
 
-    public double getBill() {
-        return bill;
+    public double getAmount() {
+        return amount;
     }
 
-    public void setBill(double bill) {
-        this.bill = bill;
+    public void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public double calculateBill(TransactionType transactionType, double apartmentCost) {
-        this.bill = consultation + tenantRepresentation + fitOut + apartmentCost;
+        this.amount = CONSULTATION + TENANT_REPRESENTATION + FIT_OUT + apartmentCost;
         if (transactionType.equals(TransactionType.BUY)) {
-            this.bill += buyTransaction;
+            this.amount += BUY_TRANSACTION;
         } else if (transactionType.equals(TransactionType.RENTAL)) {
-            this.bill += rentTransaction;
+            this.amount += RENT_TRANSACTION;
         } else {
-            System.out.println("Incorrect transaction type");
+            throw new InvalidTransactionTypeException("Incorrect transaction type: " + transactionType);
         }
-        return this.bill;
+        return this.amount;
     }
 
-    static public void printPriceList() {
-        System.out.println("consultation: " + consultation);
-        System.out.println("tenant representation:" + tenantRepresentation);
-        System.out.println("fit out " + fitOut);
-        System.out.println("Buy mediations: " + buyTransaction);
-        System.out.println("Rent mediations: " + rentTransaction);
+    public static void printPriceList() {
+        LOGGER.info("consultation: " + CONSULTATION + "\n"
+                + "tenant representation:" + TENANT_REPRESENTATION + "\n"
+                + "fit out " + FIT_OUT + "\n"
+                + "Buy mediations: " + BUY_TRANSACTION + "\n"
+                + "Rent mediations: " + RENT_TRANSACTION);
     }
 }
