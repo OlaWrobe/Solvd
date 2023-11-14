@@ -92,6 +92,7 @@ public class Main {
 
         clientOne.nearestAppointmentNotification();
         //myAgency.addApartment(house1);
+
         LOGGER.info("Suitable apartments for customer one");
         for (Apartment ap : suitableApartmentsForClientOne) {
             ap.printInfo();
@@ -116,9 +117,7 @@ public class Main {
             return;
         }
 
-
-        AgencyStatus agencyStatus = new AgencyStatus(myAgency);
-        agencyStatus.printInfo();
+        //myAgency.saveStatus();
 
 
         LocalDateTime appointmentDateTime = LocalDateTime.of(2021, 11, 10, 15, 30);

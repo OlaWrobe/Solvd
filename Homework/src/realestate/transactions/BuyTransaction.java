@@ -39,7 +39,7 @@ public class BuyTransaction extends Transaction {
                 + "Bought by " + client.getName() + " " + client.getSurname() + "\n"
                 + "With help of agent " + agent.getName() + " " + agent.getSurname() + "\n"
                 + "Time of transaction: " + transactionDateTime + "\n"
-                + "Total " + this.bill;
+                + "Total " + this.getBill().getAmount();
     }
 
     public boolean equals(Object obj) {

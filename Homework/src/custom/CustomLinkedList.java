@@ -2,6 +2,7 @@ package custom;
 
 public class CustomLinkedList<T> {
     private Node<T> head;
+    private int length = 0;
 
     public CustomLinkedList() {
         this.head = null;
@@ -18,14 +19,29 @@ public class CustomLinkedList<T> {
             }
             current.next = newNode;
         }
+        length++;
     }
 
-    public void display() {
-        Node<T> current = head;
-        while (current != null) {
-            System.out.print(current.data + " ");
-            current = current.next;
+    public int size() {
+        return length;
+    }
+
+    @Override
+    public String toString() {
+
+        String list = "{ ";
+
+        Node<T> element = this.head;
+
+        if (element == null)
+            return list + " }";
+
+        while (element.next != null) {
+            list += String.valueOf(element.data) + " -> ";
+            element = element.next;
         }
-        System.out.println();
+
+        list += String.valueOf(element.data);
+        return list + " }";
     }
 }

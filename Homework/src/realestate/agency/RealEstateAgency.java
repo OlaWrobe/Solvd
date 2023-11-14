@@ -1,5 +1,6 @@
 package realestate.agency;
 
+import custom.CustomLinkedList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import realestate.exceptions.DateBeforeTodayException;
@@ -12,6 +13,7 @@ import realestate.appointments.Status;
 import realestate.interfaces.AppointmentHandling;
 import realestate.interfaces.IRealEstateAgency;
 import realestate.interfaces.RentalActions;
+import realestate.maintenence.MaintenanceRequest;
 import realestate.person.Agent;
 import realestate.person.CityLocation;
 import realestate.person.Client;
@@ -20,10 +22,7 @@ import realestate.transactions.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling, RentalActions {
     private final static Logger LOGGER = LogManager.getLogger(RealEstateAgency.class);
@@ -33,6 +32,7 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         Bill.printPriceList();
     }
 
+    private static CustomLinkedList<AgencyStatus> allLogs = new CustomLinkedList<>();
     private Set<CityLocation> locationsOfWork;
     private List<Apartment> apartments;
     private List<Agent> agents;
@@ -40,6 +40,8 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     private List<RentalTransaction> rentalTransactions;
     private List<BuyTransaction> buyTransactions;
     private List<Appointment> appointments;
+    private Queue<MaintenanceRequest> maintenanceRequests;
+
 
     public RealEstateAgency(List<Apartment> apartments, List<Agent> agents, List<Client> clients) {
         this.apartments = apartments;
@@ -49,6 +51,7 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         this.buyTransactions = new ArrayList<>();
         this.appointments = new ArrayList<>();
         this.locationsOfWork = new HashSet<>();
+        this.maintenanceRequests = new LinkedList<>();
         for (Apartment apartment : this.apartments) {
             this.locationsOfWork.add(apartment.getLocation());
         }
@@ -267,4 +270,21 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
             throw new DuplicateDataException("Duplicate data found: " + newItem);
         }
     }
+
+    public void saveStatus() {
+        AgencyStatus newStatus = new AgencyStatus(this);
+        this.allLogs.add(newStatus);
+        LOGGER.info(this.allLogs.toString());
+    }
+
+    public void requestMaintenance(Client requester, Apartment apartment) {
+        MaintenanceRequest maintenanceRequest = new MaintenanceRequest(requester, apartment);
+        maintenanceRequests.add(maintenanceRequest);
+        System.out.println("Maintenance request added to the queue.");
+    }
+
+    public void doMaintenance() {
+        this.maintenanceRequests.remove();
+    }
+
 }

@@ -70,7 +70,7 @@ public class RentalTransaction extends Transaction {
                 + "With help of agent " + agent.getName() + " " + agent.getSurname() + "\n"
                 + "Time of transaction: " + transactionDateTime + "\n"
                 + "Rent start date: " + rentStartDate + " Rent end date: " + rentEndDate + "\n"
-                + "Total " + this.calculateTransactionFee();
+                + "Total " + this.bill.getAmount();
     }
 
     @Override
