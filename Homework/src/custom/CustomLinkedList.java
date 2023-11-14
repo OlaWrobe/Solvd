@@ -23,7 +23,7 @@ public class CustomLinkedList<T> {
     }
 
     public int size() {
-        return length;
+        return this.length;
     }
 
     @Override

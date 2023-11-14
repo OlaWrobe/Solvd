@@ -10,6 +10,7 @@ import realestate.agency.RealEstateAgency;
 import realestate.apartment.Apartment;
 import realestate.appointments.Appointment;
 import realestate.appointments.Purpose;
+import realestate.exceptions.MissingContactInformationExeption;
 import realestate.person.*;
 import realestate.transactions.TransactionType;
 
@@ -91,7 +92,6 @@ public class Main {
         clientOne.makeAppointment(appointment2);
 
         clientOne.nearestAppointmentNotification();
-        //myAgency.addApartment(house1);
 
         LOGGER.info("Suitable apartments for customer one");
         for (Apartment ap : suitableApartmentsForClientOne) {
@@ -105,6 +105,7 @@ public class Main {
         LOGGER.info("Making transactions: ");
         LOGGER.info("Make a decision as a both customers: ");
 
+        //InvalidApartmentIdException
         try (Scanner scanner = new Scanner(System.in)) {
             LOGGER.info("Which apartment does user one pick: ");
             int apartmentChoice = scanner.nextInt();
@@ -116,12 +117,30 @@ public class Main {
             LOGGER.error("Invalid apartment ID chosen: ");
             return;
         }
+        LOGGER.info("Showing that apartments disappear after being bought");
+        myAgency.printAllApartments();
+        //Maintenance testing
+        myAgency.requestMaintenance(clientTwo, house2);
+        myAgency.requestMaintenance(clientOne, house1);
+        myAgency.printMaintenanceRequests();
+        myAgency.doMaintenance();
+        myAgency.printMaintenanceRequests();
 
-        //myAgency.saveStatus();
+        myAgency.saveStatus();
 
+        //duplicate date exception
+        myAgency.addApartment(house1);
 
+        //DateBeforeTodayException
         LocalDateTime appointmentDateTime = LocalDateTime.of(2021, 11, 10, 15, 30);
         clientOne.makeAppointment(new Appointment(appointmentDateTime, clientOne, asia, Purpose.CONSULTATION));
 
+        //MissingContactInformation
+        try {
+            ContactInformation contactInformationWithMissingData = new ContactInformation(null, null, null, null, null);
+        } catch (MissingContactInformationExeption e) {
+            LOGGER.error(e);
+        }
     }
+
 }

@@ -157,6 +157,14 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         }
     }
 
+    public void printMaintenanceRequests() {
+        LOGGER.info("Maintenance Requests:");
+
+        for (MaintenanceRequest request : this.maintenanceRequests) {
+            LOGGER.info("For " + request.getRequester().getName() + " in apartment number " + request.getApartment().getApartmentId());
+        }
+    }
+
     public void rentApartment(int apartmentId, Client client) throws InvalidApartmentIdException {
         List<Apartment> suitableApartments = this.findSuitableApartments(client);
 
@@ -280,7 +288,6 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     public void requestMaintenance(Client requester, Apartment apartment) {
         MaintenanceRequest maintenanceRequest = new MaintenanceRequest(requester, apartment);
         maintenanceRequests.add(maintenanceRequest);
-        System.out.println("Maintenance request added to the queue.");
     }
 
     public void doMaintenance() {
