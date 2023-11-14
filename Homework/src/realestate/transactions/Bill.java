@@ -2,7 +2,7 @@ package realestate.transactions;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import realestate.Exceptions.InvalidTransactionTypeException;
+import realestate.exceptions.InvalidTransactionTypeException;
 import realestate.interfaces.Billing;
 
 public class Bill implements Billing {

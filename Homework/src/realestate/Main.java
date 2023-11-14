@@ -2,9 +2,9 @@ package realestate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import realestate.Exceptions.IncorrectAppointmentDateException;
-import realestate.Exceptions.InvalidApartmentIdException;
-import realestate.Exceptions.MissingContactInformationExeption;
+import realestate.exceptions.DateBeforeTodayException;
+import realestate.exceptions.DuplicateDataException;
+import realestate.exceptions.InvalidApartmentIdException;
 import realestate.agency.AgencyStatus;
 import realestate.agency.RealEstateAgency;
 import realestate.apartment.Apartment;
@@ -25,7 +25,7 @@ public class Main {
 
     private final static Logger LOGGER = LogManager.getLogger(Main.class);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DateBeforeTodayException, DuplicateDataException, InvalidApartmentIdException {
 
         //Locations
         CityLocation warszawa = new CityLocation("Warszawa", "Mazowieckie", "12-123");
@@ -84,6 +84,14 @@ public class Main {
         List<Apartment> suitableApartmentsForClientOne = myAgency.findSuitableApartments(clientOne);
         List<Apartment> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo);
 
+        Appointment appointment1 = new Appointment(LocalDateTime.of(2024, 11, 10, 15, 30), clientOne, asia, Purpose.CONSULTATION);
+        Appointment appointment2 = new Appointment(LocalDateTime.of(2024, 12, 10, 15, 30), clientTwo, basia, Purpose.RENTAL);
+
+        myAgency.makeAppointment(appointment1);
+        clientOne.makeAppointment(appointment2);
+
+        clientOne.nearestAppointmentNotification();
+        //myAgency.addApartment(house1);
         LOGGER.info("Suitable apartments for customer one");
         for (Apartment ap : suitableApartmentsForClientOne) {
             ap.printInfo();
@@ -93,31 +101,28 @@ public class Main {
         for (Apartment ap : suitableApartmentsForClientTwo) {
             ap.printInfo();
         }
-        Scanner scanner = new Scanner(System.in);
-        LOGGER.info("Make a decision as a customer two, which one will you be buying? Enter apartment number you see on screen ");
-        int apartmentChoice = scanner.nextInt();
-
         LOGGER.info("Making transactions: ");
+        LOGGER.info("Make a decision as a both customers: ");
 
-        try {
-            myAgency.rentApartment(2, clientOne);
-        } catch (InvalidApartmentIdException e) {
-            LOGGER.error("Invalid apartment ID");
-        }
-        try {
+        try (Scanner scanner = new Scanner(System.in)) {
+            LOGGER.info("Which apartment does user one pick: ");
+            int apartmentChoice = scanner.nextInt();
+            myAgency.rentApartment(apartmentChoice, clientOne);
+            LOGGER.info("Which apartment does user two pick: ");
+            apartmentChoice = scanner.nextInt();
             myAgency.rentApartment(apartmentChoice, clientTwo);
         } catch (InvalidApartmentIdException e) {
-            LOGGER.error("Invalid apartment ID chosen: " + apartmentChoice);
+            LOGGER.error("Invalid apartment ID chosen: ");
+            return;
         }
+
 
         AgencyStatus agencyStatus = new AgencyStatus(myAgency);
         agencyStatus.printInfo();
 
-        try {
-            LocalDateTime appointmentDateTime = LocalDateTime.of(2021, 11, 10, 15, 30);
-            clientOne.makeAppointment(new Appointment(appointmentDateTime, clientOne, asia, Purpose.CONSULTATION));
-        } catch (IncorrectAppointmentDateException e) {
-            LOGGER.error(e);
-        }
+
+        LocalDateTime appointmentDateTime = LocalDateTime.of(2021, 11, 10, 15, 30);
+        clientOne.makeAppointment(new Appointment(appointmentDateTime, clientOne, asia, Purpose.CONSULTATION));
+
     }
 }

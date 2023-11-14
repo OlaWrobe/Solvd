@@ -1,6 +1,6 @@
 package realestate.person;
 
-import realestate.Exceptions.IncorrectAppointmentDateException;
+import realestate.exceptions.DateBeforeTodayException;
 import realestate.appointments.Appointment;
 import realestate.appointments.Status;
 import realestate.interfaces.AppointmentHandling;
@@ -69,13 +69,13 @@ public abstract class Person implements InformationPrinting, AppointmentHandling
         }
     }
 
-    public void makeAppointment(Appointment appointment) throws IncorrectAppointmentDateException {
+    public void makeAppointment(Appointment appointment) throws DateBeforeTodayException {
         if (appointment.getAppointmentDateTime().isAfter(LocalDateTime.now())) {
             appointment.setStatus(Status.REQUESTED);
             this.appointments.add(appointment);
         } else {
             appointment.setStatus(Status.CANCELLED);
-            throw new IncorrectAppointmentDateException("Date before today");
+            throw new DateBeforeTodayException("Date before today");
         }
     }
 

@@ -1,6 +1,6 @@
 package realestate.person;
 
-import realestate.Exceptions.MissingContactInformationExeption;
+import realestate.exceptions.MissingContactInformationExeption;
 
 public class ContactInformation {
     private String phoneNumber;

@@ -1,0 +1,73 @@
+02:56:46.297 [main] INFO  realestate.agency.RealEstateAgency - Welcome to XYZ Real estate agency! Here are our services:
+02:56:46.304 [main] INFO  realestate.transactions.Bill - consultation: 500.0
+tenant representation:200.0
+fit out 700.0
+Buy mediations: 2000.0
+Rent mediations: 500.0
+02:56:46.305 [main] INFO  realestate.Main - All agency agents: 
+02:56:46.322 [main] INFO  realestate.person.Agent - Agent name: Asia Kowalska. Phone number: +48123456789 Email: 123@gmail.comArea of work: Warszawa
+02:56:46.322 [main] INFO  realestate.person.Agent - Agent name: Basia Kowalska. Phone number: +48123456789 Email: 123@gmail.comArea of work: Gdansk
+02:56:46.322 [main] INFO  realestate.Main - All clients: 
+02:56:46.337 [main] INFO  realestate.person.Client - Client name: One First. Phone number: +48111111111 Email: clientone@gmail.com
+Looking for apartment for RENTAL with 2 bedrooms and 1 bathrooms
+Without parkingBudget: 3300.0
+
+02:56:46.338 [main] INFO  realestate.person.Client - Client name: Two Second. Phone number: +48222222222 Email: clienttwo@gmail.com
+Looking for apartment for BUY with 4 bedrooms and 1 bathrooms
+Without parkingBudget: 600000.0
+
+02:56:46.338 [main] INFO  realestate.Main - All available apartments: 
+02:56:46.354 [main] INFO  realestate.apartment.Apartment - Apartment number 1 in Lublin
+No. of rooms: 2 No. of bathrooms 1.
+ Buying price: 150000.0 Rent price: 2300.0
+
+02:56:46.355 [main] INFO  realestate.apartment.Apartment - Apartment number 2 in Warszawa
+No. of rooms: 2 No. of bathrooms 1.
+ Buying price: 300000.0 Rent price: 3200.0
+
+02:56:46.356 [main] INFO  realestate.apartment.Apartment - Apartment number 3 in Gdansk
+No. of rooms: 5 No. of bathrooms 1.
+ Buying price: 320000.0 Rent price: 3200.0
+
+02:56:46.358 [main] INFO  realestate.apartment.Apartment - Apartment number 4 in Gdansk
+No. of rooms: 4 No. of bathrooms 1.
+ Buying price: 520000.0 Rent price: 5000.0
+
+02:56:46.380 [main] INFO  realestate.person.Client - Nearest appointment for client is at: 2024-11-10T15:30
+02:56:46.381 [main] INFO  realestate.Main - Suitable apartments for customer one
+02:56:46.381 [main] INFO  realestate.apartment.Apartment - Apartment number 2 in Warszawa
+No. of rooms: 2 No. of bathrooms 1.
+ Buying price: 300000.0 Rent price: 3200.0
+
+02:56:46.382 [main] INFO  realestate.Main - Suitable apartments for customer two
+02:56:46.382 [main] INFO  realestate.apartment.Apartment - Apartment number 3 in Gdansk
+No. of rooms: 5 No. of bathrooms 1.
+ Buying price: 320000.0 Rent price: 3200.0
+
+02:56:46.382 [main] INFO  realestate.apartment.Apartment - Apartment number 4 in Gdansk
+No. of rooms: 4 No. of bathrooms 1.
+ Buying price: 520000.0 Rent price: 5000.0
+
+02:56:46.382 [main] INFO  realestate.Main - Making transactions: 
+02:56:46.387 [main] INFO  realestate.Main - Make a decision as a both customers: 
+02:56:46.433 [main] INFO  realestate.Main - Which apartment does user one pick: 
+02:57:06.420 [main] INFO  realestate.agency.RealEstateAgency - Rent Transaction Id: 0
+Parcel Id: 2 in Warszawa
+Rented by One First
+With help of agent Asia Kowalska
+Time of transaction: 2023-11-14T02:57:06.404253300
+Rent start date: 2023-11-03 Rent end date: 2026-11-01
+Total 510.0
+02:57:06.421 [main] INFO  realestate.Main - Which apartment does user two pick: 
+02:57:09.324 [main] INFO  realestate.agency.RealEstateAgency - Buy transaction Id: 0
+Parcel Id: 3 in Gdansk
+Bought by Two Second
+With help of agent Basia Kowalska
+Time of transaction: 2023-11-14T02:57:09.301427300
+Total realestate.transactions.Bill@4dbb42b7
+02:57:09.334 [main] INFO  realestate.agency.AgencyStatus - Current status of agency: 
+Number of workers: 2
+Number of clients: 2
+Number of all apartments: 3
+All income: 361350.0
+Status from: 2023-11-14T02:57:09.328428100

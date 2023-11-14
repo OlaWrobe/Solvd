@@ -2,15 +2,15 @@ package realestate.agency;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import realestate.Exceptions.IncorrectAppointmentDateException;
-import realestate.Exceptions.InvalidApartmentIdException;
-import realestate.Exceptions.InvalidTransactionTypeException;
+import realestate.exceptions.DateBeforeTodayException;
+import realestate.exceptions.DuplicateDataException;
+import realestate.exceptions.InvalidApartmentIdException;
+import realestate.exceptions.InvalidTransactionTypeException;
 import realestate.apartment.Apartment;
 import realestate.appointments.Appointment;
 import realestate.appointments.Status;
 import realestate.interfaces.AppointmentHandling;
 import realestate.interfaces.IRealEstateAgency;
-import realestate.interfaces.LocationInfo;
 import realestate.interfaces.RentalActions;
 import realestate.person.Agent;
 import realestate.person.CityLocation;
@@ -21,9 +21,11 @@ import realestate.transactions.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
-public class RealEstateAgency implements IRealEstateAgency, LocationInfo, AppointmentHandling, RentalActions {
+public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling, RentalActions {
     private final static Logger LOGGER = LogManager.getLogger(RealEstateAgency.class);
 
     static {
@@ -31,7 +33,7 @@ public class RealEstateAgency implements IRealEstateAgency, LocationInfo, Appoin
         Bill.printPriceList();
     }
 
-    private CityLocation cityLocation;
+    private Set<CityLocation> locationsOfWork;
     private List<Apartment> apartments;
     private List<Agent> agents;
     private List<Client> clients;
@@ -45,6 +47,11 @@ public class RealEstateAgency implements IRealEstateAgency, LocationInfo, Appoin
         this.clients = clients;
         this.rentalTransactions = new ArrayList<>();
         this.buyTransactions = new ArrayList<>();
+        this.appointments = new ArrayList<>();
+        this.locationsOfWork = new HashSet<>();
+        for (Apartment apartment : this.apartments) {
+            this.locationsOfWork.add(apartment.getLocation());
+        }
     }
 
     public List<Apartment> getApartments() {
@@ -85,15 +92,6 @@ public class RealEstateAgency implements IRealEstateAgency, LocationInfo, Appoin
 
     public void setBuyTransactions(List<BuyTransaction> buyTransactions) {
         this.buyTransactions = buyTransactions;
-    }
-
-    @Override
-    public CityLocation getCityLocation() {
-        return cityLocation;
-    }
-
-    public void setCityLocation(CityLocation cityLocation) {
-        this.cityLocation = cityLocation;
     }
 
     public List<Apartment> findSuitableApartments(Client client) {
@@ -201,7 +199,7 @@ public class RealEstateAgency implements IRealEstateAgency, LocationInfo, Appoin
         }
     }
 
-    public void makeAppointment(Appointment appointment) throws IncorrectAppointmentDateException {
+    public void makeAppointment(Appointment appointment) throws DateBeforeTodayException {
         if (appointment.getAppointmentDateTime().isAfter(LocalDateTime.now())) {
             appointment.setStatus(Status.PLANNED);
             this.appointments.add(appointment);
@@ -212,7 +210,7 @@ public class RealEstateAgency implements IRealEstateAgency, LocationInfo, Appoin
             }
         } else {
             appointment.setStatus(Status.CANCELLED);
-            throw new IncorrectAppointmentDateException("Date before today");
+            throw new DateBeforeTodayException("Date before today");
         }
     }
 
@@ -231,6 +229,42 @@ public class RealEstateAgency implements IRealEstateAgency, LocationInfo, Appoin
                 appointments.add(app);
                 break;
             }
+        }
+    }
+
+    public void addApartment(Apartment apartment) throws DuplicateDataException {
+        checkForDuplicate(apartments, apartment);
+        apartments.add(apartment);
+    }
+
+    public void addAgent(Agent agent) throws DuplicateDataException {
+        checkForDuplicate(agents, agent);
+        agents.add(agent);
+    }
+
+    public void addClient(Client client) throws DuplicateDataException {
+        checkForDuplicate(clients, client);
+        clients.add(client);
+    }
+
+    public void addRentalTransaction(RentalTransaction rentalTransaction) throws DuplicateDataException {
+        checkForDuplicate(rentalTransactions, rentalTransaction);
+        rentalTransactions.add(rentalTransaction);
+    }
+
+    public void addBuyTransaction(BuyTransaction buyTransaction) throws DuplicateDataException {
+        checkForDuplicate(buyTransactions, buyTransaction);
+        buyTransactions.add(buyTransaction);
+    }
+
+    public void addAppointment(Appointment appointment) throws DuplicateDataException {
+        checkForDuplicate(appointments, appointment);
+        appointments.add(appointment);
+    }
+
+    private <T> void checkForDuplicate(List<T> list, T newItem) throws DuplicateDataException {
+        if (list.contains(newItem)) {
+            throw new DuplicateDataException("Duplicate data found: " + newItem);
         }
     }
 }

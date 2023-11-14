@@ -1,4 +1,4 @@
-package realestate.Exceptions;
+package realestate.exceptions;
 
 public class InvalidApartmentIdException extends Exception {
     public InvalidApartmentIdException(String message) {

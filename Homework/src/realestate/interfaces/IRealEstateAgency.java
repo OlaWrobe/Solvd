@@ -1,6 +1,6 @@
 package realestate.interfaces;
 
-import realestate.Exceptions.InvalidApartmentIdException;
+import realestate.exceptions.InvalidApartmentIdException;
 import realestate.apartment.Apartment;
 import realestate.person.Agent;
 import realestate.person.Client;
