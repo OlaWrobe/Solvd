@@ -57,22 +57,18 @@ public class Main {
         Client clientOne = new Client("One", "First", clientOneContact, formOne);
         Client clientTwo = new Client("Two", "Second", clientTwoContact, formTwo);
 
-        //Creating a real estate agency
-        List<Apartment> houseList = new ArrayList<>();
-        houseList.add(house1);
-        houseList.add(house2);
-        houseList.add(house3);
-        houseList.add(house4);
+        RealEstateAgency myAgency = new RealEstateAgency();
 
-        List<Agent> agentList = new ArrayList<>();
-        agentList.add(asia);
-        agentList.add(basia);
+        myAgency.addAgent(asia);
+        myAgency.addAgent(basia);
 
-        List<Client> clientList = new ArrayList<>();
-        clientList.add(clientOne);
-        clientList.add(clientTwo);
+        myAgency.addClient(clientOne);
+        myAgency.addClient(clientTwo);
 
-        RealEstateAgency myAgency = new RealEstateAgency(houseList, agentList, clientList);
+        myAgency.addApartment(house1);
+        myAgency.addApartment(house2);
+        myAgency.addApartment(house3);
+        myAgency.addApartment(house4);
         LOGGER.info("All agency agents: ");
         myAgency.printAllAgents();
         LOGGER.info("All clients: ");

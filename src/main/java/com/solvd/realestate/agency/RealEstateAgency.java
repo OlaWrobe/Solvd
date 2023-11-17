@@ -43,10 +43,10 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     private Queue<MaintenanceRequest> maintenanceRequests;
 
 
-    public RealEstateAgency(List<Apartment> apartments, List<Agent> agents, List<Client> clients) {
-        this.apartments = apartments;
-        this.agents = agents;
-        this.clients = clients;
+    public RealEstateAgency() {
+        this.apartments = new ArrayList<>();
+        this.agents = new ArrayList<>();
+        this.clients = new ArrayList<>();
         this.rentalTransactions = new ArrayList<>();
         this.buyTransactions = new ArrayList<>();
         this.appointments = new ArrayList<>();
