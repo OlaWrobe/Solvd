@@ -1,23 +1,22 @@
-package com.solvd.realestate.appointments;
+package com.solvd.realestate.maintenence;
 
-public enum Purpose {
-    BUY("Buy Property", "Initiate a property purchase"),
-    RENTAL("Rent Property", "Initiate a property rental"),
-    CONSULTATION("Consultation", "Request a consultation"),
-    PAYMENT("Payment", "Make a payment"),
-    ISSUE("Report Issue", "Report an issue"),
-    OTHER("Other", "Other purposes");
+public enum MaintenanceType {
+    PLUMBING("Plumbing", "Fix plumbing issues"),
+    ELECTRICAL("Electrical", "Fix electrical issues"),
+    HVAC("HVAC", "Fix heating, ventilation, and air conditioning issues"),
+    PAINTING("Painting", "Perform painting work"),
+    GENERAL("General Maintenance", "General maintenance tasks");
 
     private final String displayName;
     private final String description;
 
     // Static block to initialize enum constants
     static {
-        System.out.println("Initializing Purpose enum");
+        System.out.println("Initializing MaintenanceType enum");
     }
 
     // Constructor
-    Purpose(String displayName, String description) {
+    MaintenanceType(String displayName, String description) {
         this.displayName = displayName;
         this.description = description;
     }
@@ -35,4 +34,5 @@ public enum Purpose {
     // Example method in the enum
     public String getFullInfo() {
         return String.format("%s - %s", displayName, description);
-    }}
+    }
+}

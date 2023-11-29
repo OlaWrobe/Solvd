@@ -7,9 +7,9 @@ import com.solvd.realestate.person.Client;
 import java.time.LocalDateTime;
 
 public class Transaction {
-    private final double fee = 0.10;
     protected Client client;
     protected Agent agent;
+
     protected Apartment apartment;
     protected LocalDateTime transactionDateTime;
     protected Bill bill;
@@ -62,10 +62,10 @@ public class Transaction {
         this.bill = bill;
     }
 
-    public final double calculateTransactionFee() {
-        double transactionFee = this.bill.getAmount() * this.fee;
-        return transactionFee;
-    }
+//    public final double calculateTransactionFee() {
+//        double transactionFee = this.bill.getAmount();
+//        return transactionFee;
+//    }
 
     @Override
     public String toString() {

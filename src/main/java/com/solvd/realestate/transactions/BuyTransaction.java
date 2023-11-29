@@ -11,7 +11,7 @@ public class BuyTransaction extends Transaction {
     public BuyTransaction(Apartment apartment, Agent agent, Client client) {
         super(apartment, agent, client);
         this.transactionId = lastTransactionId;
-        this.bill.calculateBill(TransactionType.BUY, apartment.getBuyingPrice());
+        this.bill.calculateBillForBuyOrRent(TransactionType.BUY, apartment.getBuyingPrice());
         lastTransactionId++;
     }
 

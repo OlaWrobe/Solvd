@@ -19,7 +19,7 @@ public class RentalTransaction extends Transaction {
         this.transactionId = lastTransactionId;
         this.rentStartDate = rentStartDate;
         this.rentEndDate = rentEndDate;
-        this.bill.calculateBill(TransactionType.RENTAL, apartment.getRentPrice());
+        this.bill.calculateBillForBuyOrRent(TransactionType.RENTAL, apartment.getRentPrice());
         this.lastRentPayment = rentStartDate;
         lastTransactionId++;
     }
@@ -32,7 +32,6 @@ public class RentalTransaction extends Transaction {
     public static void setLastTransactionId(int lastTransactionId) {
         RentalTransaction.lastTransactionId = lastTransactionId;
     }
-
     public int getTransactionId() {
         return transactionId;
     }
