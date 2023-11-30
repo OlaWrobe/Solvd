@@ -1,6 +1,7 @@
 package com.solvd.realestate.agency;
 
 import com.solvd.realestate.apartment.Apartment;
+import com.solvd.realestate.appointments.Status;
 import com.solvd.realestate.custom.CustomLinkedList;
 import com.solvd.realestate.exceptions.DateBeforeTodayException;
 import com.solvd.realestate.exceptions.DuplicateDataException;
@@ -9,20 +10,21 @@ import com.solvd.realestate.exceptions.InvalidTransactionTypeException;
 import com.solvd.realestate.interfaces.AppointmentHandling;
 import com.solvd.realestate.interfaces.IRealEstateAgency;
 import com.solvd.realestate.interfaces.RentalActions;
-import com.solvd.realestate.maintenence.MaintenanceRequest;
+import com.solvd.realestate.maintenence.MaintenanceType;
 import com.solvd.realestate.person.Agent;
 import com.solvd.realestate.person.CityLocation;
 import com.solvd.realestate.person.ClientForm;
 import com.solvd.realestate.transactions.*;
+import com.solvd.realestate.maintenence.MaintenanceRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.solvd.realestate.appointments.Appointment;
-import com.solvd.realestate.appointments.Status;
 import com.solvd.realestate.person.Client;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.function.Predicate;
 
 public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling, RentalActions {
     private final static Logger LOGGER = LogManager.getLogger(RealEstateAgency.class);
@@ -102,6 +104,12 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         ClientForm clientForm = client.getClientForm();
         List<Apartment> finalSuitableApartments = new ArrayList<>();
 
+        Predicate<Apartment> meetsRequirements = app ->
+                clientForm.getNeedsParking() == app.getHasParking()
+                        && clientForm.getNumberOfBedrooms() <= app.getNumberOfBedrooms()
+                        && clientForm.getNumberOfBathrooms() <= app.getNumberOfBathrooms()
+                        && clientForm.getCityLocation() == app.getLocation();
+
         for (Apartment app : apartments) {
             if (meetsRequirements(clientForm, app)) {
                 double apartmentPrice = clientForm.getTransactionType() == TransactionType.BUY ?
@@ -120,13 +128,6 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
             }
         }
         return finalSuitableApartments;
-    }
-
-    private boolean meetsRequirements(ClientForm requirements, Apartment apartments) {
-        return requirements.getNeedsParking() == apartments.getHasParking()
-                && requirements.getNumberOfBedrooms() <= apartments.getNumberOfBedrooms()
-                && requirements.getNumberOfBathrooms() <= apartments.getNumberOfBathrooms()
-                && requirements.getCityLocation() == apartments.getLocation();
     }
 
     public Agent findSuitableAgent(Client client) {
@@ -193,11 +194,11 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
 
     public double getIncome() {
         double total = 0;
-        for (Transaction transaction : buyTransactions) {
-            total = total + transaction.calculateTransactionFee() + transaction.getBill().getAmount();
+        for (BuyTransaction transaction : buyTransactions) {
+            total = total + transaction.getBill().getAmount();
         }
         for (Transaction transaction : rentalTransactions) {
-            total = total + transaction.calculateTransactionFee() + transaction.getBill().getAmount();
+            total = total + transaction.getBill().getAmount();
         }
         return total;
     }
@@ -285,8 +286,8 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         LOGGER.info(this.allLogs.toString());
     }
 
-    public void requestMaintenance(Client requester, Apartment apartment) {
-        MaintenanceRequest maintenanceRequest = new MaintenanceRequest(requester, apartment);
+    public void requestMaintenance(Client requester, Apartment apartment, MaintenanceType maintenanceType) {
+        MaintenanceRequest maintenanceRequest = new MaintenanceRequest(requester, apartment,maintenanceType);
         maintenanceRequests.add(maintenanceRequest);
     }
 

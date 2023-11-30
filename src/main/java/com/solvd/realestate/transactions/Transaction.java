@@ -62,11 +62,6 @@ public class Transaction {
         this.bill = bill;
     }
 
-//    public final double calculateTransactionFee() {
-//        double transactionFee = this.bill.getAmount();
-//        return transactionFee;
-//    }
-
     @Override
     public String toString() {
         return "Parcel Id: " + apartment.getApartmentId() + " in " + apartment.getLocation().getCityName() + "\n"

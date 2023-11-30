@@ -6,6 +6,7 @@ import com.solvd.realestate.exceptions.DateBeforeTodayException;
 import com.solvd.realestate.exceptions.DuplicateDataException;
 import com.solvd.realestate.exceptions.InvalidApartmentIdException;
 import com.solvd.realestate.exceptions.MissingContactInformationExeption;
+import com.solvd.realestate.maintenence.MaintenanceType;
 import com.solvd.realestate.person.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -115,8 +116,8 @@ public class Main {
         LOGGER.info("Showing that apartments disappear after being bought");
         myAgency.printAllApartments();
         //Maintenance testing
-        myAgency.requestMaintenance(clientTwo, house2);
-        myAgency.requestMaintenance(clientOne, house1);
+        myAgency.requestMaintenance(clientTwo, house2, MaintenanceType.ELECTRICAL);
+        myAgency.requestMaintenance(clientOne, house1,MaintenanceType.GENERAL);
         myAgency.printMaintenanceRequests();
         myAgency.doMaintenance();
         myAgency.printMaintenanceRequests();

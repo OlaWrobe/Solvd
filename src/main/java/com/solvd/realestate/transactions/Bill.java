@@ -37,8 +37,6 @@ public class Bill implements Billing {
     }
 
     public static void printPriceList() {
-        LOGGER.info("consultation: " + TransactionFee.CONSULTATION.getFee() + "\n"
-                + "tenant representation:" + TransactionFee.TENANT_REPRESENTATION.getFee() + "\n"
-                + "fit out " + TransactionFee.FIT_OUT.getFee());
+        LOGGER.info(TransactionFee.printPriceList());
     }
 }

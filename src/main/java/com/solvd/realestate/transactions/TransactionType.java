@@ -28,7 +28,6 @@ public enum TransactionType {
         return transactionFee;
     }
 
-    // Example method in the enum
     public double calculateCost(double cost) {
         return cost * transactionFee;
     }
