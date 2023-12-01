@@ -232,7 +232,7 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
             for (Appointment app : client.getAppointments()
             ) {
                 if (app.equals(appointment)) {
-                    app.doAppointment(duration);
+                    app.doAppointment.accept(duration);
                     return;
                 }
 

@@ -84,7 +84,7 @@ public abstract class Person implements InformationPrinting, AppointmentHandling
         for (Appointment app : appointments
         ) {
             if (app.equals(appointment)) {
-                app.doAppointment(duration);
+                app.doAppointment.accept(duration);
                 return;
             }
         }

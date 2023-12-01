@@ -6,12 +6,7 @@ import com.solvd.realestate.transactions.TransactionFee;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import com.solvd.realestate.transactions.Bill;
@@ -93,11 +88,11 @@ public class Appointment {
     }
     // Method
 
-    public void doAppointment(double duration) {
+    public Consumer<Double> doAppointment = duration -> {
         this.duration = duration;
         this.bill.setAmount(this.purpose.calculateCost(this.bill.getAmount(), duration - purpose.getDefaultDuration()));
         this.status = Status.COMPLETED;
-    }
+    };
 
     public Runnable printAppointmentInfo = () -> {
         LOGGER.info("Appointment Information:" +
