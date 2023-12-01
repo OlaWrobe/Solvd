@@ -13,12 +13,16 @@ public enum Status {
     COMPLETED("Completed");
 
     private final String description;
-
-    // Map to store additional information related to each status
-    private static Map<Status, String> statusInfo = new HashMap<>();
-
     // Logger
     private static final Logger LOGGER = LogManager.getLogger(Status.class);
+
+    static {
+        LOGGER.info("Explanation of all the statuses: \n" +
+                "Planned: User requested an appointment. Not confirmed by agency\n" +
+                "Confirmed: Agency has confirmed the appointment.\n" +
+                "Cancelled: The appointment will not be held due to cancellation\n" +
+                "Completed: The appointment was successfully held\n");
+    }
 
     Status(String description) {
         this.description = description;
@@ -28,14 +32,8 @@ public enum Status {
         return description;
     }
 
-    // Method to get additional information related to the status
-    public String getStatusInfo() {
-        return statusInfo.get(this);
-    }
-
-    // Method to print status information for a specific appointment
-    public void printAppointmentStatus(int appointmentNumber) {
-        LOGGER.info("Appointment number {} has been {}.", appointmentNumber, this.getDescription());
-        LOGGER.info("Status Info: {}", getStatusInfo());
+    // Methods
+    public void printAppointmentStatus() {
+        LOGGER.info("Status Info: {}", getDescription());
     }
 }

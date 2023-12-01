@@ -59,7 +59,7 @@ public class Main {
         Client clientTwo = new Client("Two", "Second", clientTwoContact, formTwo);
 
         RealEstateAgency myAgency = new RealEstateAgency();
-
+        //Adding Elements
         myAgency.addAgent(asia);
         myAgency.addAgent(basia);
 
@@ -70,6 +70,8 @@ public class Main {
         myAgency.addApartment(house2);
         myAgency.addApartment(house3);
         myAgency.addApartment(house4);
+
+        //Printing all agents and clients and apartments
         LOGGER.info("All agency agents: ");
         myAgency.printAllAgents();
         LOGGER.info("All clients: ");
@@ -81,14 +83,6 @@ public class Main {
         List<Apartment> suitableApartmentsForClientOne = myAgency.findSuitableApartments(clientOne);
         List<Apartment> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo);
 
-        Appointment appointment1 = new Appointment(LocalDateTime.of(2024, 11, 10, 15, 30), clientOne, asia, Purpose.CONSULTATION);
-        Appointment appointment2 = new Appointment(LocalDateTime.of(2024, 12, 10, 15, 30), clientTwo, basia, Purpose.RENTAL);
-
-        myAgency.makeAppointment(appointment1);
-        clientOne.makeAppointment(appointment2);
-
-        clientOne.nearestAppointmentNotification();
-
         LOGGER.info("Suitable apartments for customer one");
         for (Apartment ap : suitableApartmentsForClientOne) {
             ap.printInfo();
@@ -98,6 +92,7 @@ public class Main {
         for (Apartment ap : suitableApartmentsForClientTwo) {
             ap.printInfo();
         }
+        //Transactions Buy and Rent
         LOGGER.info("Making transactions: ");
         LOGGER.info("Make a decision as a both customers: ");
 
@@ -114,16 +109,47 @@ public class Main {
             return;
         }
         LOGGER.info("Showing that apartments disappear after being bought");
+        //All apartments withought the bought one
         myAgency.printAllApartments();
+        //Paying rent
+
+
+        LOGGER.info("-----------------------------------------------------------");
         //Maintenance testing
         myAgency.requestMaintenance(clientTwo, house2, MaintenanceType.ELECTRICAL);
-        myAgency.requestMaintenance(clientOne, house1,MaintenanceType.GENERAL);
+        myAgency.requestMaintenance(clientOne, house1, MaintenanceType.GENERAL);
         myAgency.printMaintenanceRequests();
         myAgency.doMaintenance();
         myAgency.printMaintenanceRequests();
 
+        LOGGER.info("-----------------------------------------------------------");
+        //Appointments
+        Appointment appointment1 = new Appointment(LocalDateTime.of(2024, 11, 10, 15, 30), clientOne, asia, Purpose.CONSULTATION);
+        Appointment appointment2 = new Appointment(LocalDateTime.of(2024, 12, 13, 15, 30), clientOne, asia, Purpose.RENTAL);
+        Appointment appointment3 = new Appointment(LocalDateTime.of(2024, 9, 10, 15, 30), clientOne, asia, Purpose.ISSUE);
+
+        clientOne.makeAppointment(appointment1);
+        clientOne.makeAppointment(appointment1);
+        myAgency.makeAppointment(appointment3);
+        for (Appointment appointment : clientOne.getAppointments()
+        ) {
+            LOGGER.info("Date of app: " + appointment.getAppointmentDateTime() + " Status " + appointment.getStatus());
+        }
+        myAgency.acceptAppointment(clientOne, LocalDateTime.of(2024, 9, 10, 15, 30));
+        clientOne.closeAppointment(appointment2);
+        myAgency.closeAppointment(appointment1);
+        LOGGER.info("Updated appointments: ");
+        for (Appointment appointment : clientOne.getAppointments()
+        ) {
+            appointment.getStatus().printAppointmentStatus();
+        }
+        clientOne.nearestAppointmentNotification();
+        clientOne.doAppointment(appointment3, 3);
+        appointment3.printAppointmentInfo.run();
+        //Saving agency status
         myAgency.saveStatus();
 
+        /* TESTING EXCEPTIONS
         //duplicate date exception
         myAgency.addApartment(house1);
 
@@ -136,7 +162,6 @@ public class Main {
             ContactInformation contactInformationWithMissingData = new ContactInformation(null, null, null, null, null);
         } catch (MissingContactInformationExeption e) {
             LOGGER.error(e);
-        }
+        }*/
     }
-
 }

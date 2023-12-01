@@ -8,10 +8,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
 public class Main {
     public static void main(String[] args) throws IOException {
-        String content = FileUtils.readFileToString(new File("src/main/resources/file.txt"), "UTF-8");
-        Set<String> mySet = new HashSet<>(Arrays.asList(StringUtils.split(StringUtils.lowerCase(StringUtils.replaceAll(content, "\\p{Punct}", "")))));
-        FileUtils.write(new File("src/main/resources/output.txt"), "Number of unique words: " + mySet.size(), "UTF-8");
+        String content = FileUtils.readFileToString(new File("src/main/resources/file.txt"));
+        Set<String> uniqueWords = new HashSet<>(Arrays.asList(StringUtils.split(StringUtils.lowerCase(StringUtils.replaceAll(content, "\\p{Punct}", "")))));
+        FileUtils.write(new File("src/main/resources/output.txt"), "Number of unique words: " + uniqueWords.size());
     }
 }

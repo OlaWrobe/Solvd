@@ -10,7 +10,6 @@ import java.util.List;
 public interface IRealEstateAgency {
     public List<Apartment> findSuitableApartments(Client client);
 
-    public Agent findSuitableAgent(Client client);
 
     public void printAllAgents();
 

@@ -1,5 +1,7 @@
 package com.solvd.realestate.transactions;
 
+import java.util.function.Supplier;
+
 public enum TransactionFee {
     CONSULTATION(500, "Consultation Fee"),
     TENANT_REPRESENTATION(200, "Tenant Representation Fee"),
@@ -14,23 +16,22 @@ public enum TransactionFee {
         this.description = description;
     }
 
-    // Getter method for the fee
+    // Getters
     public double getFee() {
         return fee;
     }
 
-    // Getter method for the description
     public String getDescription() {
         return description;
     }
 
-    // Static method to print the price list
-    public static String  printPriceList() {
-       String result = "Transaction Fee Price List:";
+    //methods
+    public static Supplier<String> printPriceList = () -> {
+        String result = "Transaction Fee Price List:";
         for (TransactionFee fee : TransactionFee.values()) {
             result += fee.getDescription() + ": $" + fee.getFee() + "\n";
         }
-    return result;
-    }
+        return result;
+    };
 }
 

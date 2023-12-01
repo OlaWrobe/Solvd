@@ -14,7 +14,6 @@ public class BuyTransaction extends Transaction {
         this.bill.calculateBillForBuyOrRent(TransactionType.BUY, apartment.getBuyingPrice());
         lastTransactionId++;
     }
-
     // Getters and Setters
     public static int getLastTransactionId() {
         return lastTransactionId;

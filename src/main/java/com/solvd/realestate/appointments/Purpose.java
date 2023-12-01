@@ -10,12 +10,7 @@ public enum Purpose {
 
     private final String displayName;
     private final String description;
-    private final double defaultDuration; // in hours
-
-    // Static block to initialize enum constants
-    static {
-        System.out.println("Initializing Purpose enum");
-    }
+    private final double defaultDuration;
 
     // Constructor
     Purpose(String displayName, String description, double defaultDuration) {
@@ -24,58 +19,36 @@ public enum Purpose {
         this.defaultDuration = defaultDuration;
     }
 
-    // Getter method for display name
+    // Getters
     public String getDisplayName() {
         return displayName;
     }
 
-    // Getter method for description
     public String getDescription() {
         return description;
     }
 
-    // Getter method for default duration
     public double getDefaultDuration() {
         return defaultDuration;
     }
 
-    // Example method in the enum
-    public String getFullInfo() {
-        return String.format("%s - %s (Default Duration: %.2f hours)", displayName, description, defaultDuration);
-    }
-
-    // Method to calculate appointment duration based on purpose
-    public double calculateDuration(double customMultiplier) {
-        return defaultDuration * customMultiplier;
-    }
-
-    // Static method to print the purpose list
-    public static void printPurposeList() {
-        System.out.println("Purpose List:");
-        for (Purpose purpose : Purpose.values()) {
-            System.out.println(purpose.getFullInfo());
-        }
-    }
-    public double calculateCost(double baseCost) {
-        // Add custom cost calculation based on purpose
+    // Methods
+    public double calculateCost(double baseCost, double overtime) {
         switch (this) {
             case BUY:
-                return baseCost * 1.2;
+                if (overtime < 0.5) {
+                    return baseCost * 1.2;
+                } else {
+                    return baseCost * 1.3;
+                }
             case RENTAL:
-                return baseCost * 1.1;
+                if (overtime < 0.5) {
+                    return baseCost * 1.1;
+                } else {
+                    return baseCost * 1.2;
+                }
             default:
-                return baseCost;
+                return baseCost * 1.05;
         }
-    }
-
-    public double calculateCustomDuration(double customMultiplier) {
-        // Add custom duration calculation based on purpose
-        return getDefaultDuration() * customMultiplier;
-    }
-
-    public String getCustomInfo(double customMultiplier) {
-        // Additional information based on custom multiplier
-        return String.format("%s - %s (Default Duration: %.2f hours, Custom Duration: %.2f hours)",
-                getDisplayName(), getDescription(), getDefaultDuration(), calculateCustomDuration(customMultiplier));
     }
 }

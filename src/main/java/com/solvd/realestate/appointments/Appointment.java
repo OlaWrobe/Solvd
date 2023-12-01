@@ -2,29 +2,37 @@ package com.solvd.realestate.appointments;
 
 import com.solvd.realestate.person.Agent;
 import com.solvd.realestate.person.Client;
+import com.solvd.realestate.transactions.TransactionFee;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
+
+import com.solvd.realestate.transactions.Bill;
 
 public class Appointment {
     private static final Logger LOGGER = LogManager.getLogger(Appointment.class);
-
     private LocalDateTime appointmentDateTime;
     private Client client;
     private Agent agent;
     private Purpose purpose;
     private Status status;
-
-    // Map to hold agents and their timetables (list of available times)
-    private static Map<Agent, List<LocalDateTime>> agentTimetables;
+    private Bill bill;
+    private double duration;
 
     public Appointment(LocalDateTime appointmentDateTime, Client client, Agent agent, Purpose purpose) {
         this.appointmentDateTime = appointmentDateTime;
         this.client = client;
         this.agent = agent;
         this.purpose = purpose;
+        this.bill = new Bill();
+        this.bill.calculateBillForMisc(TransactionFee.CONSULTATION);
         this.status = null;
     }
 
@@ -68,43 +76,38 @@ public class Appointment {
         this.status = status;
     }
 
-    // Calculate appointment duration based on purpose
-    public double calculateAppointmentDuration(double customMultiplier) {
-        return purpose.calculateCustomDuration(customMultiplier);
+    public Bill getBill() {
+        return bill;
     }
 
-    // Check agent availability using the static agentTimetables map
-    public boolean isAgentAvailable() {
-        List<LocalDateTime> agentAvailability = agentTimetables.get(agent);
-        return agentAvailability != null &&
-                agentAvailability.stream().anyMatch(time -> time.isBefore(appointmentDateTime));
+    public void setBill(Bill bill) {
+        this.bill = bill;
     }
 
-    // Book the agent if available, otherwise log unavailability and suggest the next available date
-    public void bookAgent() {
-        List<LocalDateTime> agentAvailability = agentTimetables.get(agent);
-
-        if (agentAvailability != null && agentAvailability.stream().anyMatch(time -> time.isBefore(appointmentDateTime))) {
-            LOGGER.info("Agent booked for appointment on " + appointmentDateTime);
-        } else {
-            LocalDateTime nextAvailableDate = agentAvailability != null && !agentAvailability.isEmpty()
-                    ? agentAvailability.get(0).plusHours(1)
-                    : LocalDateTime.now().plusDays(1).withHour(9).withMinute(0);
-
-            LOGGER.info("Agent is not available. Next available date: " + nextAvailableDate);
-        }
+    public double getDuration() {
+        return duration;
     }
 
-    // Method to add an agent and their availability to the timetable
-    public static void addAgentToTimetable(Agent agent, List<LocalDateTime> availability) {
-        agentTimetables.put(agent, availability);
-        LOGGER.info("Agent " + agent.getName() + " added to the timetable with availability: " + availability);
+    public void setDuration(double duration) {
+        this.duration = duration;
+    }
+    // Method
+
+    public void doAppointment(double duration) {
+        this.duration = duration;
+        this.bill.setAmount(this.purpose.calculateCost(this.bill.getAmount(), duration - purpose.getDefaultDuration()));
+        this.status = Status.COMPLETED;
     }
 
-    // Print the entire timetable
-    public static void printTimetable() {
-        LOGGER.info("Agent Timetables:");
-        //Lambda with generics
-        agentTimetables.forEach((key, value) -> LOGGER.info("Agent: " + key.getName() + ", Availability: " + value));
-    }
+    public Runnable printAppointmentInfo = () -> {
+        LOGGER.info("Appointment Information:" +
+                "\nDateTime: " + appointmentDateTime +
+                "\nClient: " + client.getName() +
+                "\nAgent: " + agent.getName() +
+                "\nPurpose: " + purpose +
+                "\nStatus: " + status +
+                "\nBill: " + bill.getAmount() +
+                "\nDuration: " + duration + " hours");
+    };
+
 }

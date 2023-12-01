@@ -24,7 +24,9 @@ import com.solvd.realestate.person.Client;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+
 
 public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling, RentalActions {
     private final static Logger LOGGER = LogManager.getLogger(RealEstateAgency.class);
@@ -41,24 +43,20 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     private List<Client> clients;
     private List<RentalTransaction> rentalTransactions;
     private List<BuyTransaction> buyTransactions;
-    private List<Appointment> appointments;
     private Queue<MaintenanceRequest> maintenanceRequests;
 
-
+    //Constructor
     public RealEstateAgency() {
         this.apartments = new ArrayList<>();
         this.agents = new ArrayList<>();
         this.clients = new ArrayList<>();
         this.rentalTransactions = new ArrayList<>();
         this.buyTransactions = new ArrayList<>();
-        this.appointments = new ArrayList<>();
         this.locationsOfWork = new HashSet<>();
         this.maintenanceRequests = new LinkedList<>();
-        for (Apartment apartment : this.apartments) {
-            this.locationsOfWork.add(apartment.getLocation());
-        }
     }
 
+    //getters and setters
     public List<Apartment> getApartments() {
         return apartments;
     }
@@ -99,45 +97,35 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         this.buyTransactions = buyTransactions;
     }
 
-    public List<Apartment> findSuitableApartments(Client client) {
+    //Methods
+    public BiPredicate<ClientForm, Apartment> meetsRequirements = (clientForm, app) ->
+            clientForm.getNeedsParking() == app.getHasParking()
+                    && clientForm.getNumberOfBedrooms() <= app.getNumberOfBedrooms()
+                    && clientForm.getNumberOfBathrooms() <= app.getNumberOfBathrooms()
+                    && clientForm.getCityLocation() == app.getLocation();
 
+    public List<Apartment> findSuitableApartments(Client client) {
         ClientForm clientForm = client.getClientForm();
         List<Apartment> finalSuitableApartments = new ArrayList<>();
 
-        Predicate<Apartment> meetsRequirements = app ->
-                clientForm.getNeedsParking() == app.getHasParking()
-                        && clientForm.getNumberOfBedrooms() <= app.getNumberOfBedrooms()
-                        && clientForm.getNumberOfBathrooms() <= app.getNumberOfBathrooms()
-                        && clientForm.getCityLocation() == app.getLocation();
-
         for (Apartment app : apartments) {
-            if (meetsRequirements(clientForm, app)) {
-                double apartmentPrice = clientForm.getTransactionType() == TransactionType.BUY ?
-                        app.getBuyingPrice() : clientForm.getTransactionType() == TransactionType.RENTAL ?
-                        app.getRentPrice() : 0;
-
+            if (meetsRequirements.test(clientForm, app)) {
+                double apartmentPrice = switch (clientForm.getTransactionType()) {
+                    case BUY -> app.getBuyingPrice();
+                    case RENTAL -> app.getRentPrice();
+                };
                 double budget = clientForm.getBudget();
 
                 if (apartmentPrice != 0) {
                     if (budget >= apartmentPrice) {
                         finalSuitableApartments.add(app);
+                    } else {
+                        throw new InvalidTransactionTypeException("Incorrect transaction type");
                     }
-                } else {
-                    throw new InvalidTransactionTypeException("Incorrect transaction type");
                 }
             }
         }
         return finalSuitableApartments;
-    }
-
-    public Agent findSuitableAgent(Client client) {
-        for (Agent agent : agents) {
-            if (client.getContact().getCityLocation() == agent.getCityLocation()) {
-                return agent;
-            }
-        }
-        LOGGER.info("No suitable agents");
-        return null;
     }
 
     public void printAllAgents() {
@@ -166,6 +154,16 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         }
     }
 
+    Function<Client, Agent> findSuitableAgent = c -> {
+        for (Agent agent : agents) {
+            if (c.getContact().getCityLocation().equals(agent.getCityLocation())) {
+                return agent;
+            }
+        }
+        LOGGER.info("No suitable agents");
+        return null;
+    };
+
     public void rentApartment(int apartmentId, Client client) throws InvalidApartmentIdException {
         List<Apartment> suitableApartments = this.findSuitableApartments(client);
 
@@ -176,12 +174,12 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
 
         if (apartmentToBeRentedOrBought != null) {
             if (client.getClientForm().getTransactionType() == TransactionType.RENTAL) {
-                RentalTransaction transaction = new RentalTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
+                RentalTransaction transaction = new RentalTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent.apply(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
                 this.rentalTransactions.add(transaction);
                 LOGGER.info(transaction.toString());
                 apartments.removeIf(apartment -> apartment.getApartmentId() == apartmentToBeRentedOrBought.getApartmentId());
             } else if (client.getClientForm().getTransactionType() == TransactionType.BUY) {
-                BuyTransaction transaction = new BuyTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent(client), client);
+                BuyTransaction transaction = new BuyTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent.apply(client), client);
                 this.buyTransactions.add(transaction);
                 LOGGER.info(transaction.toString());
             } else {
@@ -204,17 +202,18 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     }
 
     public void closeAppointment(Appointment appointment) {
-        for (Appointment app : this.appointments) {
-            if (appointment.equals(app)) {
-                app.setStatus(Status.CANCELLED);
+        for (Client client : clients) {
+            for (Appointment app : client.getAppointments()) {
+                if (appointment.equals(app)) {
+                    app.setStatus(Status.CANCELLED);
+                }
             }
         }
     }
 
     public void makeAppointment(Appointment appointment) throws DateBeforeTodayException {
         if (appointment.getAppointmentDateTime().isAfter(LocalDateTime.now())) {
-            appointment.setStatus(Status.PLANNED);
-            this.appointments.add(appointment);
+            appointment.setStatus(Status.CONFIRMED);
             for (Client client : clients) {
                 if (client.equals(appointment.getClient())) {
                     client.addAppointment(appointment);
@@ -223,6 +222,21 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         } else {
             appointment.setStatus(Status.CANCELLED);
             throw new DateBeforeTodayException("Date before today");
+        }
+    }
+
+    @Override
+    public void doAppointment(Appointment appointment, double duration) {
+        for (Client client : clients
+        ) {
+            for (Appointment app : client.getAppointments()
+            ) {
+                if (app.equals(appointment)) {
+                    app.doAppointment(duration);
+                    return;
+                }
+
+            }
         }
     }
 
@@ -237,8 +251,7 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     public void acceptAppointment(Client client, LocalDateTime date) {
         for (Appointment app : client.getAppointments()) {
             if (app.getAppointmentDateTime() == date) {
-                app.setStatus(Status.PLANNED);
-                appointments.add(app);
+                app.setStatus(Status.CONFIRMED);
                 break;
             }
         }
@@ -247,6 +260,7 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     public void addApartment(Apartment apartment) throws DuplicateDataException {
         checkForDuplicate(apartments, apartment);
         apartments.add(apartment);
+        this.locationsOfWork.add(apartment.getLocation());
     }
 
     public void addAgent(Agent agent) throws DuplicateDataException {
@@ -257,21 +271,6 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     public void addClient(Client client) throws DuplicateDataException {
         checkForDuplicate(clients, client);
         clients.add(client);
-    }
-
-    public void addRentalTransaction(RentalTransaction rentalTransaction) throws DuplicateDataException {
-        checkForDuplicate(rentalTransactions, rentalTransaction);
-        rentalTransactions.add(rentalTransaction);
-    }
-
-    public void addBuyTransaction(BuyTransaction buyTransaction) throws DuplicateDataException {
-        checkForDuplicate(buyTransactions, buyTransaction);
-        buyTransactions.add(buyTransaction);
-    }
-
-    public void addAppointment(Appointment appointment) throws DuplicateDataException {
-        checkForDuplicate(appointments, appointment);
-        appointments.add(appointment);
     }
 
     private <T> void checkForDuplicate(List<T> list, T newItem) throws DuplicateDataException {
@@ -287,12 +286,13 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     }
 
     public void requestMaintenance(Client requester, Apartment apartment, MaintenanceType maintenanceType) {
-        MaintenanceRequest maintenanceRequest = new MaintenanceRequest(requester, apartment,maintenanceType);
+        MaintenanceRequest maintenanceRequest = new MaintenanceRequest(requester, apartment, maintenanceType);
         maintenanceRequests.add(maintenanceRequest);
     }
 
     public void doMaintenance() {
-        this.maintenanceRequests.remove();
+        MaintenanceRequest request = this.maintenanceRequests.remove();
+        request.doMaintenance();
     }
 
 }

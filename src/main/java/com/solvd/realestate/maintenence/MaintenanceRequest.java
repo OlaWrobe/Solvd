@@ -44,13 +44,10 @@ public class MaintenanceRequest {
     }
 
     public void doMaintenance() {
-        double hourlyRate = 20.0; // Set your hourly rate
+        double hourlyRate = 20.0;
         double cost = maintenanceType.calculateCost(hourlyRate);
-
-        LOGGER.info("Maintenance request received from %s for apartment %s. Maintenance Type: %s. Estimated Cost: $%.2f" +
-                requester.getName(), apartment.getLocation(), maintenanceType.getDisplayName(), cost);
-
-        LOGGER.info(String.format("Maintenance completed on apartment %s. Total Cost: $%.2f", apartment.getLocation(), cost));
+        LOGGER.info("Maintenance completed on apartment " + apartment.getApartmentId() +
+                ". Total Cost: "+cost +". Maintenance scope "+ maintenanceType.getDescription());
     }
 }
 

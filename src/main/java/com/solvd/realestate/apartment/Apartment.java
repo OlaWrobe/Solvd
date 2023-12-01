@@ -28,8 +28,6 @@ public class Apartment implements InformationPrinting {
     }
 
     // Getters and setters
-
-
     public static int getLastApartmentId() {
         return lastApartmentId;
     }
@@ -101,7 +99,6 @@ public class Apartment implements InformationPrinting {
         } else {
             parking = " Without parking.";
         }
-
         LOGGER.info("Apartment number " + this.apartmentId + " in " + this.location.getCityName() + "\n" +
                 "No. of rooms: " + this.numberOfBedrooms + " No. of bathrooms " + this.numberOfBathrooms + "." + "\n"
                 + " Buying price: " + this.buyingPrice + " Rent price: " + this.rentPrice + "\n");

@@ -1,11 +1,10 @@
 package com.solvd.realestate.transactions;
 
 import com.solvd.realestate.exceptions.InvalidTransactionTypeException;
-import com.solvd.realestate.interfaces.Billing;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class Bill implements Billing {
+public class Bill {
     private final static Logger LOGGER = LogManager.getLogger(Bill.class);
     private double amount;
 
@@ -33,10 +32,10 @@ public class Bill implements Billing {
     }
     public double calculateBillForMisc(TransactionFee typeOfService)
     {
-        return typeOfService.getFee() + this.amount;
+        this.amount = typeOfService.getFee() + this.amount;
+        return this.amount;
     }
-
     public static void printPriceList() {
-        LOGGER.info(TransactionFee.printPriceList());
+        LOGGER.info(TransactionFee.printPriceList.get());
     }
 }

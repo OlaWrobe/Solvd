@@ -7,27 +7,18 @@ public enum TransactionType {
     private final String description;
     private final double transactionFee;
 
-    // Static block to initialize enum constants
-    static {
-        System.out.println("Initializing TransactionType enum");
-    }
-
     // Constructor
     TransactionType(String description, double transactionFee) {
         this.description = description;
         this.transactionFee = transactionFee;
     }
-
-    // Getter method for description
+    // Getters
     public String getDescription() {
         return description;
     }
-
-    // Getter method for transaction fee
     public double getTransactionFee() {
         return transactionFee;
     }
-
     public double calculateCost(double cost) {
         return cost * transactionFee;
     }

@@ -16,27 +16,21 @@ public enum MaintenanceType {
         this.timeNeeded = timeNeeded;
     }
 
-    // Getter method for display name
+    // Getters
     public String getDisplayName() {
         return displayName;
     }
 
-    // Getter method for description
     public String getDescription() {
         return description;
     }
 
-    // Getter method for time needed
     public double getTimeNeeded() {
         return timeNeeded;
     }
 
-    // Example method in the enum
-    public String getFullInfo() {
-        return String.format("%s - %s (Time Needed: %.2f hours)", displayName, description, timeNeeded);
-    }
+    //Methods
 
-    // Method to calculate maintenance cost based on time and hourly rate
     public double calculateCost(double hourlyRate) {
         return timeNeeded * hourlyRate;
     }

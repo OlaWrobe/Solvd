@@ -8,4 +8,5 @@ public interface AppointmentHandling {
 
     public void makeAppointment(Appointment appointment) throws DateBeforeTodayException;
 
+    public void doAppointment(Appointment appointment, double duration);
 }

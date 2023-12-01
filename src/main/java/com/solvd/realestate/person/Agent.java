@@ -26,7 +26,6 @@ public class Agent extends Person implements InformationPrinting, LocationInfo {
         return agentId;
     }
 
-
     public CityLocation getCityLocation() {
         return cityLocation;
     }
@@ -60,7 +59,6 @@ public class Agent extends Person implements InformationPrinting, LocationInfo {
                 }
             }
         }
-
         if (nearestAppointment != null) {
             LOGGER.info("Nearest appointment for agent is at: " + nearestAppointment.getAppointmentDateTime());
         } else {

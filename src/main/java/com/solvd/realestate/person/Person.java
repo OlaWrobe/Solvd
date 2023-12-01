@@ -79,5 +79,16 @@ public abstract class Person implements InformationPrinting, AppointmentHandling
         }
     }
 
+    @Override
+    public void doAppointment(Appointment appointment, double duration) {
+        for (Appointment app : appointments
+        ) {
+            if (app.equals(appointment)) {
+                app.doAppointment(duration);
+                return;
+            }
+        }
+    }
+
     public abstract void nearestAppointmentNotification();
 }
