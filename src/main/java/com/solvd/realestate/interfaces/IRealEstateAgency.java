@@ -2,12 +2,10 @@ package com.solvd.realestate.interfaces;
 
 import com.solvd.realestate.apartment.Apartment;
 import com.solvd.realestate.exceptions.InvalidApartmentIdException;
-import com.solvd.realestate.person.Agent;
 import com.solvd.realestate.person.Client;
 import com.solvd.realestate.person.ClientForm;
 import com.solvd.realestate.transactions.Transaction;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.BiPredicate;
 

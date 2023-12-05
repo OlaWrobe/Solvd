@@ -35,6 +35,7 @@ public class Bill {
         this.amount = typeOfService.getFee() + this.amount;
         return this.amount;
     }
+
     public static void printPriceList() {
         LOGGER.info(TransactionFee.printPriceList.get());
     }

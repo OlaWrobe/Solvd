@@ -1,10 +1,8 @@
 package com.solvd.realestate.person;
 
 import com.solvd.realestate.apartment.Apartment;
-import com.solvd.realestate.interfaces.AppointmentHandling;
-import com.solvd.realestate.interfaces.FilterAppointments;
-import com.solvd.realestate.interfaces.InformationPrinting;
-import com.solvd.realestate.interfaces.RentalActions;
+import com.solvd.realestate.interfaces.*;
+import com.solvd.realestate.transactions.Transaction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.solvd.realestate.appointments.Appointment;
@@ -57,7 +55,6 @@ public class Client extends Person implements InformationPrinting, AppointmentHa
                 + this.clientForm.getNumberOfBathrooms() + " bathrooms" + "\n" + parking + "Budget: " + this.clientForm.getBudget() + "\n");
     }
 
-    //TODO: THINK OF A DIFFERENT METHOD TO OVERRIDE SINCE IT'S NOW THE SAME FOR BOTH AGENT AND CLIENT
     @Override
     public void nearestAppointmentNotification(FilterAppointments<LocalDateTime> filter) {
         Appointment nearestAppointment = null;
