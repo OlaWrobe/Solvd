@@ -3,6 +3,7 @@ package com.solvd.realestate.person;
 import com.solvd.realestate.appointments.Status;
 import com.solvd.realestate.exceptions.DateBeforeTodayException;
 import com.solvd.realestate.interfaces.AppointmentHandling;
+import com.solvd.realestate.interfaces.FilterAppointments;
 import com.solvd.realestate.interfaces.InformationPrinting;
 import com.solvd.realestate.appointments.Appointment;
 import com.solvd.realestate.transactions.BuyTransaction;
@@ -69,8 +70,8 @@ public abstract class Person implements InformationPrinting, AppointmentHandling
         }
     }
 
-    public void makeAppointment(Appointment appointment) throws DateBeforeTodayException {
-        if (appointment.getAppointmentDateTime().isAfter(LocalDateTime.now())) {
+    public void makeAppointment(Appointment appointment, FilterAppointments filter) throws DateBeforeTodayException {
+        if (filter.appointmentFilter(appointment)) {
             appointment.setStatus(Status.PLANNED);
             this.appointments.add(appointment);
         } else {
@@ -90,5 +91,5 @@ public abstract class Person implements InformationPrinting, AppointmentHandling
         }
     }
 
-    public abstract void nearestAppointmentNotification();
+    public abstract void nearestAppointmentNotification(FilterAppointments filter);
 }

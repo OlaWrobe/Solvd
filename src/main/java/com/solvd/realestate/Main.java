@@ -2,6 +2,7 @@ package com.solvd.realestate;
 
 import com.solvd.realestate.agency.RealEstateAgency;
 import com.solvd.realestate.apartment.Apartment;
+import com.solvd.realestate.appointments.Status;
 import com.solvd.realestate.exceptions.DateBeforeTodayException;
 import com.solvd.realestate.exceptions.DuplicateDataException;
 import com.solvd.realestate.exceptions.InvalidApartmentIdException;
@@ -79,31 +80,35 @@ public class Main {
         LOGGER.info("All available apartments: ");
         myAgency.printAllApartments();
 
-        //Finding suitable apartments
-        List<Apartment> suitableApartmentsForClientOne = myAgency.findSuitableApartments(clientOne);
-        List<Apartment> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo);
-
-        LOGGER.info("Suitable apartments for customer one");
-        for (Apartment ap : suitableApartmentsForClientOne) {
-            ap.printInfo();
-        }
-
-        LOGGER.info("Suitable apartments for customer two");
-        for (Apartment ap : suitableApartmentsForClientTwo) {
-            ap.printInfo();
-        }
         //Transactions Buy and Rent
-        LOGGER.info("Making transactions: ");
-        LOGGER.info("Make a decision as a both customers: ");
-
         //InvalidApartmentIdException
         try (Scanner scanner = new Scanner(System.in)) {
+            LOGGER.info("Suitable apartments for customer one");
+            List<Apartment> suitableApartmentsForClientOne = myAgency.findSuitableApartments(clientOne, (clientForm, app) ->
+                    clientForm.getNeedsParking() == app.getHasParking()
+                            && clientForm.getNumberOfBedrooms() <= app.getNumberOfBedrooms()
+                            && clientForm.getNumberOfBathrooms() <= app.getNumberOfBathrooms()
+                            && clientForm.getCityLocation() == app.getLocation());
+            for (Apartment ap : suitableApartmentsForClientOne) {
+                ap.printInfo();
+            }
             LOGGER.info("Which apartment does user one pick: ");
             int apartmentChoice = scanner.nextInt();
-            myAgency.rentApartment(apartmentChoice, clientOne);
+            myAgency.rentApartment(apartmentChoice, clientOne, suitableApartmentsForClientOne);
+
+            List<Apartment> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo, (clientForm, app) ->
+                    clientForm.getNeedsParking() == app.getHasParking()
+                            && clientForm.getNumberOfBedrooms() <= app.getNumberOfBedrooms()
+                            && clientForm.getNumberOfBathrooms() <= app.getNumberOfBathrooms()
+                            && (clientForm.getCityLocation() == app.getLocation() || clientForm.getCityLocation().equals(lublin)));
+
+            LOGGER.info("Suitable apartments for customer two");
+            for (Apartment ap : suitableApartmentsForClientTwo) {
+                ap.printInfo();
+            }
             LOGGER.info("Which apartment does user two pick: ");
             apartmentChoice = scanner.nextInt();
-            myAgency.rentApartment(apartmentChoice, clientTwo);
+            myAgency.rentApartment(apartmentChoice, clientTwo, suitableApartmentsForClientTwo);
         } catch (InvalidApartmentIdException e) {
             LOGGER.error("Invalid apartment ID chosen: ");
             return;
@@ -128,8 +133,12 @@ public class Main {
         Appointment appointment2 = new Appointment(LocalDateTime.of(2024, 12, 13, 15, 30), clientOne, asia, Purpose.RENTAL);
         Appointment appointment3 = new Appointment(LocalDateTime.of(2024, 9, 10, 15, 30), clientOne, asia, Purpose.ISSUE);
 
-        clientOne.makeAppointment(appointment1);
-        clientOne.makeAppointment(appointment1);
+        clientOne.makeAppointment(appointment1, appointment -> {
+            return appointment.getAppointmentDateTime().isAfter(LocalDateTime.now());
+        });
+        clientOne.makeAppointment(appointment1, appointment -> {
+            return appointment.getAppointmentDateTime().isAfter(LocalDateTime.now());
+        });
         myAgency.makeAppointment(appointment3);
         for (Appointment appointment : clientOne.getAppointments()
         ) {
@@ -143,7 +152,9 @@ public class Main {
         ) {
             appointment.getStatus().printAppointmentStatus();
         }
-        clientOne.nearestAppointmentNotification();
+        clientOne.nearestAppointmentNotification(appointment -> {
+            return appointment.getAppointmentDateTime().isAfter(LocalDateTime.now()) && appointment.getStatus() != Status.CANCELLED;
+        });
         clientOne.doAppointment(appointment3, 3);
         appointment3.printAppointmentInfo.run();
         //Saving agency status

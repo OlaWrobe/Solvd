@@ -9,6 +9,7 @@ import com.solvd.realestate.exceptions.InvalidApartmentIdException;
 import com.solvd.realestate.exceptions.InvalidTransactionTypeException;
 import com.solvd.realestate.interfaces.AppointmentHandling;
 import com.solvd.realestate.interfaces.IRealEstateAgency;
+import com.solvd.realestate.interfaces.MeetsRequirements;
 import com.solvd.realestate.interfaces.RentalActions;
 import com.solvd.realestate.maintenence.MaintenanceType;
 import com.solvd.realestate.person.Agent;
@@ -98,18 +99,13 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     }
 
     //Methods
-    public BiPredicate<ClientForm, Apartment> meetsRequirements = (clientForm, app) ->
-            clientForm.getNeedsParking() == app.getHasParking()
-                    && clientForm.getNumberOfBedrooms() <= app.getNumberOfBedrooms()
-                    && clientForm.getNumberOfBathrooms() <= app.getNumberOfBathrooms()
-                    && clientForm.getCityLocation() == app.getLocation();
 
-    public List<Apartment> findSuitableApartments(Client client) {
+    public List<Apartment> findSuitableApartments(Client client, MeetsRequirements meetsRequirements) {
         ClientForm clientForm = client.getClientForm();
         List<Apartment> finalSuitableApartments = new ArrayList<>();
 
         for (Apartment app : apartments) {
-            if (meetsRequirements.test(clientForm, app)) {
+            if (meetsRequirements.meetsRequirements(clientForm, app)) {
                 double apartmentPrice = switch (clientForm.getTransactionType()) {
                     case BUY -> app.getBuyingPrice();
                     case RENTAL -> app.getRentPrice();
@@ -164,8 +160,8 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         return null;
     };
 
-    public void rentApartment(int apartmentId, Client client) throws InvalidApartmentIdException {
-        List<Apartment> suitableApartments = this.findSuitableApartments(client);
+    public void rentApartment(int apartmentId, Client client, List<Apartment> suitableAp) throws InvalidApartmentIdException {
+        List<Apartment> suitableApartments = suitableAp;
 
         Apartment apartmentToBeRentedOrBought = suitableApartments.stream()
                 .filter(apartment -> apartment.getApartmentId() == apartmentId)

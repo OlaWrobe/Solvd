@@ -2,6 +2,7 @@ package com.solvd.realestate.person;
 
 import com.solvd.realestate.apartment.Apartment;
 import com.solvd.realestate.interfaces.AppointmentHandling;
+import com.solvd.realestate.interfaces.FilterAppointments;
 import com.solvd.realestate.interfaces.InformationPrinting;
 import com.solvd.realestate.interfaces.RentalActions;
 import org.apache.logging.log4j.LogManager;
@@ -11,6 +12,7 @@ import com.solvd.realestate.appointments.Status;
 import com.solvd.realestate.transactions.RentalTransaction;
 
 import java.time.LocalDateTime;
+import java.util.logging.Filter;
 
 public class Client extends Person implements InformationPrinting, AppointmentHandling, RentalActions {
     private final static Logger LOGGER = LogManager.getLogger(Client.class);
@@ -54,23 +56,22 @@ public class Client extends Person implements InformationPrinting, AppointmentHa
                 + this.clientForm.getNumberOfBedrooms() + " bedrooms and "
                 + this.clientForm.getNumberOfBathrooms() + " bathrooms" + "\n" + parking + "Budget: " + this.clientForm.getBudget() + "\n");
     }
-
+    
+    //TODO: THINK OF A DIFFERENT METHOD TO OVERRIDE SINCE IT'S NOW THE SAME FOR BOTH AGENT AND CLIENT
     @Override
-    public void nearestAppointmentNotification() {
+    public void nearestAppointmentNotification(FilterAppointments filter) {
         Appointment nearestAppointment = null;
-        LocalDateTime now = LocalDateTime.now();
 
         for (Appointment appointment : this.appointments) {
-            if (appointment.getAppointmentDateTime().isAfter(now) && appointment.getStatus() != Status.CANCELLED) {
-                if (nearestAppointment == null || appointment.getAppointmentDateTime().isBefore(nearestAppointment.getAppointmentDateTime())) {
-                    nearestAppointment = appointment;
-                }
+            if (filter.appointmentFilter(appointment)) {
+                nearestAppointment = appointment;
+                break;
             }
         }
         if (nearestAppointment != null) {
             LOGGER.info("Nearest appointment for client is at: " + nearestAppointment.getAppointmentDateTime());
         } else {
-            LOGGER.info("No appointments");
+            LOGGER.info("There are no nearest appointments");
         }
     }
 

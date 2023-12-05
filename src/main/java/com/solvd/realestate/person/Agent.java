@@ -1,5 +1,6 @@
 package com.solvd.realestate.person;
 
+import com.solvd.realestate.interfaces.FilterAppointments;
 import com.solvd.realestate.interfaces.InformationPrinting;
 import com.solvd.realestate.interfaces.LocationInfo;
 import org.apache.logging.log4j.LogManager;
@@ -47,16 +48,14 @@ public class Agent extends Person implements InformationPrinting, LocationInfo {
         LOGGER.info("Agent name: " + this.name + " " + this.surname + "." + " Phone number: " + this.contact.getPhoneNumber() + " Email: " + this.contact.getEmail() + "Area of work: " + this.cityLocation.getCityName());
     }
 
+    //TODO: THINK OF A DIFFERENT METHOD TO OVERRIDE SINCE IT'S NOW THE SAME FOR BOTH AGENT AND CLIENT
     @Override
-    public void nearestAppointmentNotification() {
+    public void nearestAppointmentNotification(FilterAppointments filter) {
         Appointment nearestAppointment = null;
-        LocalDateTime now = LocalDateTime.now();
-
         for (Appointment appointment : this.appointments) {
-            if (appointment.getAppointmentDateTime().isAfter(now)) {
-                if (nearestAppointment == null || appointment.getAppointmentDateTime().isBefore(nearestAppointment.getAppointmentDateTime())) {
-                    nearestAppointment = appointment;
-                }
+            if (filter.appointmentFilter(appointment)) {
+                nearestAppointment = appointment;
+                break;
             }
         }
         if (nearestAppointment != null) {

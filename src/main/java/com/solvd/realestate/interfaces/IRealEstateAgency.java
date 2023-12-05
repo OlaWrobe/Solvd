@@ -8,8 +8,7 @@ import com.solvd.realestate.person.Client;
 import java.util.List;
 
 public interface IRealEstateAgency {
-    public List<Apartment> findSuitableApartments(Client client);
-
+    public List<Apartment> findSuitableApartments(Client client, MeetsRequirements meetsRequirements);
 
     public void printAllAgents();
 
@@ -17,5 +16,5 @@ public interface IRealEstateAgency {
 
     public void printAllApartments();
 
-    public void rentApartment(int apartmentId, Client client) throws InvalidApartmentIdException;
+    public void rentApartment(int apartmentId, Client client, List<Apartment> suitableApartments) throws InvalidApartmentIdException;
 }
