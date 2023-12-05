@@ -70,8 +70,8 @@ public abstract class Person implements InformationPrinting, AppointmentHandling
         }
     }
 
-    public void makeAppointment(Appointment appointment, FilterAppointments filter) throws DateBeforeTodayException {
-        if (filter.appointmentFilter(appointment)) {
+    public void makeAppointment(Appointment appointment, FilterAppointments<LocalDateTime> filter) throws DateBeforeTodayException {
+        if (filter.appointmentFilter(appointment, LocalDateTime.now())) {
             appointment.setStatus(Status.PLANNED);
             this.appointments.add(appointment);
         } else {
@@ -91,5 +91,5 @@ public abstract class Person implements InformationPrinting, AppointmentHandling
         }
     }
 
-    public abstract void nearestAppointmentNotification(FilterAppointments filter);
+    public abstract void nearestAppointmentNotification(FilterAppointments<LocalDateTime> filter);
 }

@@ -9,6 +9,8 @@ import com.solvd.realestate.exceptions.InvalidApartmentIdException;
 import com.solvd.realestate.exceptions.MissingContactInformationExeption;
 import com.solvd.realestate.maintenence.MaintenanceType;
 import com.solvd.realestate.person.*;
+import com.solvd.realestate.transactions.BuyTransaction;
+import com.solvd.realestate.transactions.RentalTransaction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.solvd.realestate.appointments.Appointment;
@@ -94,7 +96,9 @@ public class Main {
             }
             LOGGER.info("Which apartment does user one pick: ");
             int apartmentChoice = scanner.nextInt();
-            myAgency.rentApartment(apartmentChoice, clientOne, suitableApartmentsForClientOne);
+            myAgency.rentApartment(apartmentChoice, clientOne, suitableApartmentsForClientOne, (transaction -> {
+                myAgency.addRentTransaction((RentalTransaction) transaction);
+            }));
 
             List<Apartment> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo, (clientForm, app) ->
                     clientForm.getNeedsParking() == app.getHasParking()
@@ -108,7 +112,9 @@ public class Main {
             }
             LOGGER.info("Which apartment does user two pick: ");
             apartmentChoice = scanner.nextInt();
-            myAgency.rentApartment(apartmentChoice, clientTwo, suitableApartmentsForClientTwo);
+            myAgency.rentApartment(apartmentChoice, clientTwo, suitableApartmentsForClientTwo, (transaction -> {
+                myAgency.addBuyTransaction((BuyTransaction) transaction);
+            }));
         } catch (InvalidApartmentIdException e) {
             LOGGER.error("Invalid apartment ID chosen: ");
             return;
@@ -133,13 +139,10 @@ public class Main {
         Appointment appointment2 = new Appointment(LocalDateTime.of(2024, 12, 13, 15, 30), clientOne, asia, Purpose.RENTAL);
         Appointment appointment3 = new Appointment(LocalDateTime.of(2024, 9, 10, 15, 30), clientOne, asia, Purpose.ISSUE);
 
-        clientOne.makeAppointment(appointment1, appointment -> {
-            return appointment.getAppointmentDateTime().isAfter(LocalDateTime.now());
-        });
-        clientOne.makeAppointment(appointment1, appointment -> {
-            return appointment.getAppointmentDateTime().isAfter(LocalDateTime.now());
-        });
-        myAgency.makeAppointment(appointment3);
+        clientOne.makeAppointment(appointment1, (appointment, date) -> appointment.getAppointmentDateTime().isAfter(LocalDateTime.now()));
+        clientOne.makeAppointment(appointment2, (appointment, date) -> appointment.getAppointmentDateTime().isAfter(LocalDateTime.now()));
+        myAgency.makeAppointment(appointment3, (appointment, date) -> appointment.getAppointmentDateTime().isAfter(LocalDateTime.now().plusDays(1)));
+
         for (Appointment appointment : clientOne.getAppointments()
         ) {
             LOGGER.info("Date of app: " + appointment.getAppointmentDateTime() + " Status " + appointment.getStatus());
@@ -152,8 +155,8 @@ public class Main {
         ) {
             appointment.getStatus().printAppointmentStatus();
         }
-        clientOne.nearestAppointmentNotification(appointment -> {
-            return appointment.getAppointmentDateTime().isAfter(LocalDateTime.now()) && appointment.getStatus() != Status.CANCELLED;
+        clientOne.nearestAppointmentNotification((appointment, date) -> {
+            return appointment.getAppointmentDateTime().isAfter(date) && appointment.getStatus() != Status.CANCELLED;
         });
         clientOne.doAppointment(appointment3, 3);
         appointment3.printAppointmentInfo.run();

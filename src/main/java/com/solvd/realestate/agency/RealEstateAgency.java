@@ -7,10 +7,7 @@ import com.solvd.realestate.exceptions.DateBeforeTodayException;
 import com.solvd.realestate.exceptions.DuplicateDataException;
 import com.solvd.realestate.exceptions.InvalidApartmentIdException;
 import com.solvd.realestate.exceptions.InvalidTransactionTypeException;
-import com.solvd.realestate.interfaces.AppointmentHandling;
-import com.solvd.realestate.interfaces.IRealEstateAgency;
-import com.solvd.realestate.interfaces.MeetsRequirements;
-import com.solvd.realestate.interfaces.RentalActions;
+import com.solvd.realestate.interfaces.*;
 import com.solvd.realestate.maintenence.MaintenanceType;
 import com.solvd.realestate.person.Agent;
 import com.solvd.realestate.person.CityLocation;
@@ -99,13 +96,12 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     }
 
     //Methods
-
-    public List<Apartment> findSuitableApartments(Client client, MeetsRequirements meetsRequirements) {
+    public List<Apartment> findSuitableApartments(Client client, BiPredicate<ClientForm, Apartment> meetsRequirements) {
         ClientForm clientForm = client.getClientForm();
         List<Apartment> finalSuitableApartments = new ArrayList<>();
 
         for (Apartment app : apartments) {
-            if (meetsRequirements.meetsRequirements(clientForm, app)) {
+            if (meetsRequirements.test(clientForm, app)) {
                 double apartmentPrice = switch (clientForm.getTransactionType()) {
                     case BUY -> app.getBuyingPrice();
                     case RENTAL -> app.getRentPrice();
@@ -160,23 +156,23 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         return null;
     };
 
-    public void rentApartment(int apartmentId, Client client, List<Apartment> suitableAp) throws InvalidApartmentIdException {
+    public void rentApartment(int apartmentId, Client client, List<Apartment> suitableAp, TransactionHandler<Transaction> handler) throws InvalidApartmentIdException {
         List<Apartment> suitableApartments = suitableAp;
 
         Apartment apartmentToBeRentedOrBought = suitableApartments.stream()
                 .filter(apartment -> apartment.getApartmentId() == apartmentId)
                 .findFirst()
                 .orElse(null);
-
         if (apartmentToBeRentedOrBought != null) {
-            if (client.getClientForm().getTransactionType() == TransactionType.RENTAL) {
+            TransactionType transactionType = client.getClientForm().getTransactionType();
+
+            if (transactionType == TransactionType.RENTAL) {
                 RentalTransaction transaction = new RentalTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent.apply(client), client, LocalDate.of(2023, 11, 3), LocalDate.of(2026, 11, 1));
-                this.rentalTransactions.add(transaction);
+                handler.handleTransaction(transaction);
                 LOGGER.info(transaction.toString());
-                apartments.removeIf(apartment -> apartment.getApartmentId() == apartmentToBeRentedOrBought.getApartmentId());
-            } else if (client.getClientForm().getTransactionType() == TransactionType.BUY) {
+            } else if (transactionType == TransactionType.BUY) {
                 BuyTransaction transaction = new BuyTransaction(apartmentToBeRentedOrBought, this.findSuitableAgent.apply(client), client);
-                this.buyTransactions.add(transaction);
+                handler.handleTransaction(transaction);
                 LOGGER.info(transaction.toString());
             } else {
                 throw new InvalidTransactionTypeException("Incorrect transaction type");
@@ -207,8 +203,8 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         }
     }
 
-    public void makeAppointment(Appointment appointment) throws DateBeforeTodayException {
-        if (appointment.getAppointmentDateTime().isAfter(LocalDateTime.now())) {
+    public void makeAppointment(Appointment appointment, FilterAppointments<LocalDateTime> filter) throws DateBeforeTodayException {
+        if (filter.appointmentFilter(appointment, LocalDateTime.now())) {
             appointment.setStatus(Status.CONFIRMED);
             for (Client client : clients) {
                 if (client.equals(appointment.getClient())) {
@@ -267,6 +263,16 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     public void addClient(Client client) throws DuplicateDataException {
         checkForDuplicate(clients, client);
         clients.add(client);
+    }
+
+    public void addBuyTransaction(BuyTransaction transaction) {
+        this.buyTransactions.add(transaction);
+        apartments.removeIf(apartment -> apartment.getApartmentId() == transaction.getApartment().getApartmentId());
+    }
+
+    public void addRentTransaction(RentalTransaction transaction) {
+        this.rentalTransactions.add(transaction);
+        apartments.removeIf(apartment -> apartment.getApartmentId() == transaction.getApartment().getApartmentId());
     }
 
     private <T> void checkForDuplicate(List<T> list, T newItem) throws DuplicateDataException {

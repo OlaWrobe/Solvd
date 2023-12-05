@@ -1,5 +1,6 @@
 package com.solvd.realestate.person;
 
+import com.solvd.realestate.interfaces.AppointmentHandling;
 import com.solvd.realestate.interfaces.FilterAppointments;
 import com.solvd.realestate.interfaces.InformationPrinting;
 import com.solvd.realestate.interfaces.LocationInfo;
@@ -50,10 +51,10 @@ public class Agent extends Person implements InformationPrinting, LocationInfo {
 
     //TODO: THINK OF A DIFFERENT METHOD TO OVERRIDE SINCE IT'S NOW THE SAME FOR BOTH AGENT AND CLIENT
     @Override
-    public void nearestAppointmentNotification(FilterAppointments filter) {
+    public void nearestAppointmentNotification(FilterAppointments<LocalDateTime> filter) {
         Appointment nearestAppointment = null;
         for (Appointment appointment : this.appointments) {
-            if (filter.appointmentFilter(appointment)) {
+            if (filter.appointmentFilter(appointment, LocalDateTime.now())) {
                 nearestAppointment = appointment;
                 break;
             }

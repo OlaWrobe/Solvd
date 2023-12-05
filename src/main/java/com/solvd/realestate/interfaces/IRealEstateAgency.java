@@ -4,11 +4,15 @@ import com.solvd.realestate.apartment.Apartment;
 import com.solvd.realestate.exceptions.InvalidApartmentIdException;
 import com.solvd.realestate.person.Agent;
 import com.solvd.realestate.person.Client;
+import com.solvd.realestate.person.ClientForm;
+import com.solvd.realestate.transactions.Transaction;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 public interface IRealEstateAgency {
-    public List<Apartment> findSuitableApartments(Client client, MeetsRequirements meetsRequirements);
+    public List<Apartment> findSuitableApartments(Client client, BiPredicate<ClientForm, Apartment> meetsRequirements);
 
     public void printAllAgents();
 
@@ -16,5 +20,5 @@ public interface IRealEstateAgency {
 
     public void printAllApartments();
 
-    public void rentApartment(int apartmentId, Client client, List<Apartment> suitableApartments) throws InvalidApartmentIdException;
+    public void rentApartment(int apartmentId, Client client, List<Apartment> suitableApartments, TransactionHandler<Transaction> handler) throws InvalidApartmentIdException;
 }

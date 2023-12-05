@@ -56,14 +56,14 @@ public class Client extends Person implements InformationPrinting, AppointmentHa
                 + this.clientForm.getNumberOfBedrooms() + " bedrooms and "
                 + this.clientForm.getNumberOfBathrooms() + " bathrooms" + "\n" + parking + "Budget: " + this.clientForm.getBudget() + "\n");
     }
-    
+
     //TODO: THINK OF A DIFFERENT METHOD TO OVERRIDE SINCE IT'S NOW THE SAME FOR BOTH AGENT AND CLIENT
     @Override
-    public void nearestAppointmentNotification(FilterAppointments filter) {
+    public void nearestAppointmentNotification(FilterAppointments<LocalDateTime> filter) {
         Appointment nearestAppointment = null;
 
         for (Appointment appointment : this.appointments) {
-            if (filter.appointmentFilter(appointment)) {
+            if (filter.appointmentFilter(appointment, LocalDateTime.now())) {
                 nearestAppointment = appointment;
                 break;
             }
