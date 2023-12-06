@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-
+import java.util.stream.Collectors;
 
 public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling, RentalActions {
     private final static Logger LOGGER = LogManager.getLogger(RealEstateAgency.class);
@@ -42,6 +42,10 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     private List<RentalTransaction> rentalTransactions;
     private List<BuyTransaction> buyTransactions;
     private Queue<MaintenanceRequest> maintenanceRequests;
+    // Map clients to their rental transactions
+    Map<Client, List<RentalTransaction>> clientRentalTransactionsMap = new HashMap<>();
+    Map<Client, List<BuyTransaction>> clientBuyTransactionsMap = new HashMap<>();
+
 
     //Constructor
     public RealEstateAgency() {
@@ -146,15 +150,15 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         }
     }
 
-    Function<Client, Agent> findSuitableAgent = c -> {
-        for (Agent agent : agents) {
-            if (c.getContact().getCityLocation().equals(agent.getCityLocation())) {
-                return agent;
-            }
-        }
-        LOGGER.info("No suitable agents");
-        return null;
-    };
+    Function<Client, Agent> findSuitableAgent = client ->
+            agents.stream()
+                    .filter(agent -> client.getContact().getCityLocation().equals(agent.getCityLocation()))
+                    .peek(agent -> LOGGER.info("Suitable agent found: " + agent.getName()))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        LOGGER.info("No suitable agents");
+                        return null;
+                    });
 
     public void rentApartment(int apartmentId, Client client, List<Apartment> suitableAp, TransactionHandler<Transaction> handler) throws InvalidApartmentIdException {
         List<Apartment> suitableApartments = suitableAp;
@@ -219,25 +223,11 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
 
     @Override
     public void doAppointment(Appointment appointment, double duration) {
-        for (Client client : clients
-        ) {
-            for (Appointment app : client.getAppointments()
-            ) {
-                if (app.equals(appointment)) {
-                    app.doAppointment.accept(duration);
-                    return;
-                }
-
-            }
-        }
-    }
-
-    public void payRent(Apartment apartment) {
-        for (RentalTransaction transaction : rentalTransactions) {
-            if (transaction.getApartment().equals(apartment)) {
-                transaction.payRent();
-            }
-        }
+        clients.stream()
+                .flatMap(client -> client.getAppointments().stream())
+                .filter(app -> app.equals(appointment))
+                .findFirst()
+                .ifPresent(app -> app.doAppointment.accept(duration));
     }
 
     public void acceptAppointment(Client client, LocalDateTime date) {
@@ -268,6 +258,7 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     public void addBuyTransaction(BuyTransaction transaction) {
         this.buyTransactions.add(transaction);
         apartments.removeIf(apartment -> apartment.getApartmentId() == transaction.getApartment().getApartmentId());
+
     }
 
     public void addRentTransaction(RentalTransaction transaction) {
@@ -276,7 +267,8 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     }
 
     private <T> void checkForDuplicate(List<T> list, T newItem) throws DuplicateDataException {
-        if (list.contains(newItem)) {
+        boolean isDuplicate = list.stream().anyMatch(existingItem -> existingItem.equals(newItem));
+        if (isDuplicate) {
             throw new DuplicateDataException("Duplicate data found: " + newItem);
         }
     }
@@ -297,4 +289,33 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         request.doMaintenance();
     }
 
+    public void mapCustomers() {
+        this.clientRentalTransactionsMap = rentalTransactions.stream()
+                .collect(Collectors.groupingBy(transaction -> ((RentalTransaction) transaction).getClient()));
+        this.clientBuyTransactionsMap = buyTransactions.stream()
+                .collect(Collectors.groupingBy(transaction -> ((BuyTransaction) transaction).getClient()));
+    }
+
+    public void payRent(Client client, double amount, int apartmentId) throws InvalidApartmentIdException {
+        List<RentalTransaction> clientRentalTransactions = clientRentalTransactionsMap.get(client);
+
+        clientRentalTransactions.stream()
+                .filter(transaction -> transaction.getApartment().getApartmentId() == apartmentId)
+                .findFirst()
+                .flatMap(rentalTransaction -> {
+                    if (amount >= rentalTransaction.calculateRent()) {
+                        rentalTransaction.payRent();
+                        LOGGER.info("Rent payment successful for apartmentId " + apartmentId +
+                                " by client " + client.getName() +
+                                ". Remaining balance: " + (amount - rentalTransaction.calculateRent()));
+                        return Optional.of(rentalTransaction);
+                    } else {
+                        LOGGER.warn("Insufficient funds to pay rent for apartmentId " + apartmentId +
+                                " by client " + client.getName() +
+                                ". Required amount: " + rentalTransaction.calculateRent());
+                        return Optional.empty();
+                    }
+                })
+                .orElseThrow(() -> new InvalidApartmentIdException("Rental transaction not found for apartmentId: " + apartmentId));
+    }
 }

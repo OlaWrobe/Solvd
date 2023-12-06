@@ -17,16 +17,12 @@ public abstract class Person implements InformationPrinting, AppointmentHandling
     protected String name;
     protected String surname;
     protected ContactInformation contact;
-    protected List<BuyTransaction> buyTransactions;
-    protected List<RentalTransaction> rentalTransactions;
     protected List<Appointment> appointments;
 
     public Person(String name, String surname, ContactInformation contact) {
         this.name = name;
         this.surname = surname;
         this.contact = contact;
-        this.buyTransactions = new ArrayList<>();
-        this.rentalTransactions = new ArrayList<>();
         this.appointments = new ArrayList<>();
     }
 

@@ -72,13 +72,13 @@ public class Client extends Person implements InformationPrinting, AppointmentHa
         }
     }
 
-    public void payRent(Apartment apartment) {
-        for (RentalTransaction transaction : rentalTransactions) {
-            if (transaction.getApartment().equals(apartment)) {
-                transaction.payRent();
-            }
-        }
-    }
+//    public void payRent(Apartment apartment) {
+//        for (RentalTransaction transaction : rentalTransactions) {
+//            if (transaction.getApartment().equals(apartment)) {
+//                transaction.payRent();
+//            }
+//        }
+//    }
 
     public void addAppointment(Appointment appointment) {
         this.appointments.add(appointment);

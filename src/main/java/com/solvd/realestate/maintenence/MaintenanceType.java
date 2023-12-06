@@ -1,4 +1,5 @@
 package com.solvd.realestate.maintenence;
+
 public enum MaintenanceType {
     PLUMBING("Plumbing", "Fix plumbing issues", 2.5),
     ELECTRICAL("Electrical", "Fix electrical issues", 3.0),
@@ -9,6 +10,7 @@ public enum MaintenanceType {
     private final String displayName;
     private final String description;
     private final double timeNeeded; // in hours
+
     // Constructor
     MaintenanceType(String displayName, String description, double timeNeeded) {
         this.displayName = displayName;
@@ -30,7 +32,6 @@ public enum MaintenanceType {
     }
 
     //Methods
-
     public double calculateCost(double hourlyRate) {
         return timeNeeded * hourlyRate;
     }
