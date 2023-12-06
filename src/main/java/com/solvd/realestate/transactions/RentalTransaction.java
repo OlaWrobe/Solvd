@@ -5,6 +5,7 @@ import com.solvd.realestate.person.Agent;
 import com.solvd.realestate.person.Client;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class RentalTransaction extends Transaction {
@@ -32,6 +33,14 @@ public class RentalTransaction extends Transaction {
 
     public static void setLastTransactionId(int lastTransactionId) {
         RentalTransaction.lastTransactionId = lastTransactionId;
+    }
+
+    public LocalDate getLastRentPayment() {
+        return lastRentPayment;
+    }
+
+    public void setLastRentPayment(LocalDate lastRentPayment) {
+        this.lastRentPayment = lastRentPayment;
     }
 
     public int getTransactionId() {
@@ -65,9 +74,9 @@ public class RentalTransaction extends Transaction {
 
     private int calculateMonthsDue() {
         if (lastRentPayment == null) {
-            return (int) ChronoUnit.MONTHS.between(rentStartDate, rentEndDate) + 1;
+            return (int) ChronoUnit.MONTHS.between(rentStartDate, LocalDateTime.now()) + 1;
         } else {
-            return (int) ChronoUnit.MONTHS.between(lastRentPayment, rentEndDate);
+            return (int) ChronoUnit.MONTHS.between(lastRentPayment, LocalDateTime.now());
         }
     }
 
@@ -75,6 +84,7 @@ public class RentalTransaction extends Transaction {
         double monthlyRent = this.bill.getAmount();
         int monthsDue = calculateMonthsDue();
         return monthlyRent * monthsDue;
+
     }
 
     @Override

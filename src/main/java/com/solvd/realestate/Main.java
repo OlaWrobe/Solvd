@@ -17,6 +17,7 @@ import com.solvd.realestate.appointments.Appointment;
 import com.solvd.realestate.appointments.Purpose;
 import com.solvd.realestate.transactions.TransactionType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -162,9 +163,11 @@ public class Main {
         appointment3.printAppointmentInfo.run();
         //Saving agency status
         myAgency.saveStatus();
-
+        myAgency.mapCustomers();
+        myAgency.getTransactions().get(0).setRentStartDate(LocalDate.of(2023,10,05));
+        myAgency.payRent(clientOne, 11520, 2);
         /* TESTING EXCEPTIONS
-        //duplicate date exception
+        //duplicate data exception
         myAgency.addApartment(house1);
 
         //DateBeforeTodayException

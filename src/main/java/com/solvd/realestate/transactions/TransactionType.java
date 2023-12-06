@@ -20,6 +20,6 @@ public enum TransactionType {
         return transactionFee;
     }
     public double calculateCost(double cost) {
-        return cost * transactionFee;
+        return cost + cost * transactionFee;
     }
 }

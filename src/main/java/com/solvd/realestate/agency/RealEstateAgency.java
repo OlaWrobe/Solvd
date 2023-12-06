@@ -294,6 +294,19 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
                 .collect(Collectors.groupingBy(transaction -> ((RentalTransaction) transaction).getClient()));
         this.clientBuyTransactionsMap = buyTransactions.stream()
                 .collect(Collectors.groupingBy(transaction -> ((BuyTransaction) transaction).getClient()));
+
+        System.out.println("Client Rental Transactions Map:");
+        clientRentalTransactionsMap.forEach((client, transactions) -> {
+            System.out.println("Client: " + client.getName());
+            transactions.forEach(transaction -> System.out.println("  " + transaction));
+        });
+
+// Printing clientBuyTransactionsMap
+        System.out.println("\nClient Buy Transactions Map:");
+        clientBuyTransactionsMap.forEach((client, transactions) -> {
+            System.out.println("Client: " + client);
+            transactions.forEach(transaction -> System.out.println("  " + transaction));
+        });
     }
 
     public void payRent(Client client, double amount, int apartmentId) throws InvalidApartmentIdException {
@@ -303,11 +316,12 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
                 .filter(transaction -> transaction.getApartment().getApartmentId() == apartmentId)
                 .findFirst()
                 .flatMap(rentalTransaction -> {
-                    if (amount >= rentalTransaction.calculateRent()) {
+                   double calculated = rentalTransaction.calculateRent();
+                    if (amount >= calculated) {
                         rentalTransaction.payRent();
                         LOGGER.info("Rent payment successful for apartmentId " + apartmentId +
                                 " by client " + client.getName() +
-                                ". Remaining balance: " + (amount - rentalTransaction.calculateRent()));
+                                ". Remaining balance: " + (amount - calculated));
                         return Optional.of(rentalTransaction);
                     } else {
                         LOGGER.warn("Insufficient funds to pay rent for apartmentId " + apartmentId +
