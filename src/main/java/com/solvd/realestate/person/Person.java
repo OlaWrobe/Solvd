@@ -6,8 +6,6 @@ import com.solvd.realestate.interfaces.AppointmentHandling;
 import com.solvd.realestate.interfaces.FilterAppointments;
 import com.solvd.realestate.interfaces.InformationPrinting;
 import com.solvd.realestate.appointments.Appointment;
-import com.solvd.realestate.transactions.BuyTransaction;
-import com.solvd.realestate.transactions.RentalTransaction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

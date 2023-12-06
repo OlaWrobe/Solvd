@@ -1,16 +1,11 @@
 package com.solvd.realestate.person;
 
-import com.solvd.realestate.apartment.Apartment;
 import com.solvd.realestate.interfaces.*;
-import com.solvd.realestate.transactions.Transaction;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import com.solvd.realestate.appointments.Appointment;
-import com.solvd.realestate.appointments.Status;
-import com.solvd.realestate.transactions.RentalTransaction;
 
 import java.time.LocalDateTime;
-import java.util.logging.Filter;
 
 public class Client extends Person implements InformationPrinting, AppointmentHandling, RentalActions {
     private final static Logger LOGGER = LogManager.getLogger(Client.class);

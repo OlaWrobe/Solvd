@@ -144,7 +144,6 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
 
     public void printMaintenanceRequests() {
         LOGGER.info("Maintenance Requests:");
-
         for (MaintenanceRequest request : this.maintenanceRequests) {
             LOGGER.info("For " + request.getRequester().getName() + " in apartment number " + request.getApartment().getApartmentId());
         }
@@ -294,19 +293,6 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
                 .collect(Collectors.groupingBy(transaction -> ((RentalTransaction) transaction).getClient()));
         this.clientBuyTransactionsMap = buyTransactions.stream()
                 .collect(Collectors.groupingBy(transaction -> ((BuyTransaction) transaction).getClient()));
-
-        System.out.println("Client Rental Transactions Map:");
-        clientRentalTransactionsMap.forEach((client, transactions) -> {
-            System.out.println("Client: " + client.getName());
-            transactions.forEach(transaction -> System.out.println("  " + transaction));
-        });
-
-// Printing clientBuyTransactionsMap
-        System.out.println("\nClient Buy Transactions Map:");
-        clientBuyTransactionsMap.forEach((client, transactions) -> {
-            System.out.println("Client: " + client);
-            transactions.forEach(transaction -> System.out.println("  " + transaction));
-        });
     }
 
     public void payRent(Client client, double amount, int apartmentId) throws InvalidApartmentIdException {
@@ -315,19 +301,19 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
         clientRentalTransactions.stream()
                 .filter(transaction -> transaction.getApartment().getApartmentId() == apartmentId)
                 .findFirst()
-                .flatMap(rentalTransaction -> {
-                   double calculated = rentalTransaction.calculateRent();
+                .map(rentalTransaction -> {
+                    double calculated = rentalTransaction.calculateRent();
                     if (amount >= calculated) {
                         rentalTransaction.payRent();
                         LOGGER.info("Rent payment successful for apartmentId " + apartmentId +
                                 " by client " + client.getName() +
                                 ". Remaining balance: " + (amount - calculated));
-                        return Optional.of(rentalTransaction);
+                        return rentalTransaction;
                     } else {
                         LOGGER.warn("Insufficient funds to pay rent for apartmentId " + apartmentId +
                                 " by client " + client.getName() +
-                                ". Required amount: " + rentalTransaction.calculateRent());
-                        return Optional.empty();
+                                ". Required amount: " + calculated);
+                        return null;
                     }
                 })
                 .orElseThrow(() -> new InvalidApartmentIdException("Rental transaction not found for apartmentId: " + apartmentId));

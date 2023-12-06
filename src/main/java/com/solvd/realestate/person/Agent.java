@@ -1,6 +1,5 @@
 package com.solvd.realestate.person;
 
-import com.solvd.realestate.interfaces.AppointmentHandling;
 import com.solvd.realestate.interfaces.FilterAppointments;
 import com.solvd.realestate.interfaces.InformationPrinting;
 import com.solvd.realestate.interfaces.LocationInfo;

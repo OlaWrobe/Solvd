@@ -100,7 +100,6 @@ public class Main {
             myAgency.rentApartment(apartmentChoice, clientOne, suitableApartmentsForClientOne, (transaction -> {
                 myAgency.addRentTransaction((RentalTransaction) transaction);
             }));
-
             List<Apartment> suitableApartmentsForClientTwo = myAgency.findSuitableApartments(clientTwo, (clientForm, app) ->
                     clientForm.getNeedsParking() == app.getHasParking()
                             && clientForm.getNumberOfBedrooms() <= app.getNumberOfBedrooms()
@@ -164,7 +163,7 @@ public class Main {
         //Saving agency status
         myAgency.saveStatus();
         myAgency.mapCustomers();
-        myAgency.getTransactions().get(0).setRentStartDate(LocalDate.of(2023,10,05));
+        myAgency.getTransactions().get(0).setRentStartDate(LocalDate.of(2023, 10, 05));
         myAgency.payRent(clientOne, 11520, 2);
         /* TESTING EXCEPTIONS
         //duplicate data exception
