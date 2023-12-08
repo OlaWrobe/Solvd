@@ -42,7 +42,6 @@ public class RealEstateAgency implements IRealEstateAgency, AppointmentHandling,
     private List<RentalTransaction> rentalTransactions;
     private List<BuyTransaction> buyTransactions;
     private Queue<MaintenanceRequest> maintenanceRequests;
-    // Map clients to their rental transactions
     Map<Client, List<RentalTransaction>> clientRentalTransactionsMap = new HashMap<>();
     Map<Client, List<BuyTransaction>> clientBuyTransactionsMap = new HashMap<>();
 
