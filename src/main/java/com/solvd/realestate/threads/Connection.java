@@ -1,12 +1,10 @@
 package com.solvd.realestate.threads;
 
 public class Connection {
+    private static int counter = 0;
 
-    public static int counting = 0;
-
-    public static int getCounting() {
-        return counting;
+    public static void work() {
+        counter++;
+        System.out.println("Working " + counter);
     }
-
-
 }

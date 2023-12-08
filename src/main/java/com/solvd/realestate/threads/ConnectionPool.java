@@ -2,6 +2,8 @@ package com.solvd.realestate.threads;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 public class ConnectionPool {
     private volatile static ConnectionPool instance;
