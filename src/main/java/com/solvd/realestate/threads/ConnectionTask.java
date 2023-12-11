@@ -1,11 +1,15 @@
 package com.solvd.realestate.threads;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ConnectionTask extends Thread {
+    private final static Logger LOGGER = LogManager.getLogger(ConnectionTask.class);
     private final ConnectionPool connectionPool;
 
     public ConnectionTask(ConnectionPool connectionPool) {
@@ -20,36 +24,23 @@ public class ConnectionTask extends Thread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("Thread " + Thread.currentThread().getId() + " got connection: " + connection);
+        LOGGER.info("Thread " + Thread.currentThread().getId() + " got connection: " + connection.getId());
+
 
         connection.work();
 
         connectionPool.releaseConnection(connection);
-        System.out.println("Thread " + Thread.currentThread().getId() + " released connection: " + connection);
-
+        LOGGER.info("Thread " + Thread.currentThread().getId() + " released connection: " + connection.getId());
     }
 
     public static void main(String args[]) throws InterruptedException {
         int poolSize = 5;
         ConnectionPool connectionPool = ConnectionPool.getInstance(poolSize);
-        //
-//        ExecutorService executorService = Executors.newFixedThreadPool(7);
-//        for (int i = 0; i < 7; i++) {
-//            executorService.submit(new ConnectionTask(connectionPool));
-//        }
-//        executorService.shutdown();
-        List<Thread> threads = new ArrayList<>();
-        for (int i = 1; i < 8; i++) {
-            Thread thread = new Thread(new ConnectionTask(connectionPool));
-            thread.start();
-            threads.add(thread);
+
+        ExecutorService executorService = Executors.newFixedThreadPool(7);
+        for (int i = 0; i < 7; i++) {
+            executorService.submit(new ConnectionTask(connectionPool));
         }
-        threads.forEach(thread -> {
-            try {
-                thread.join();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        executorService.shutdown();
     }
 }
